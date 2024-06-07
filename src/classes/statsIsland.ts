@@ -25,6 +25,7 @@ export class StatsIsland {
     private aliveSpan: HTMLElement | null | undefined
     private crashedSpan: HTMLElement | null | undefined
     private completedSpan: HTMLElement | null | undefined
+    private avgFitnessSpan: HTMLElement | null | undefined
 
     constructor() {
         this.statsIsland = document.querySelector('#stats-island')
@@ -38,6 +39,7 @@ export class StatsIsland {
         this.aliveSpan = this.statsIsland?.querySelector('#alive-span')
         this.crashedSpan = this.statsIsland?.querySelector('#crashed-span')
         this.completedSpan = this.statsIsland?.querySelector('#completed-span')
+        this.avgFitnessSpan = this.statsIsland?.querySelector('#avg-fitness-span')
     }
 
     update(ticker: Ticker): void {
@@ -53,6 +55,7 @@ export class StatsIsland {
             this.updateAlive()
             this.updateCrashed()
             this.updateCompleted()
+            this.updateAvgFitness()
 
             this.updateCounter = 0
         }
@@ -96,5 +99,9 @@ export class StatsIsland {
 
     private updateCompleted() {
         if (this.completedSpan) this.completedSpan.innerHTML = `${completed.get()}`
+    }
+
+    private updateAvgFitness() {
+        if (this.avgFitnessSpan) this.avgFitnessSpan.innerHTML = `0.0`
     }
 }
