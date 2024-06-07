@@ -29,7 +29,7 @@ class MutableNumber extends MutableValue<number> {
     }
 }
 
-export const TRAIL_ASSET = await Assets.load('../../assets/trail.png')
+export const TRAIL_ASSET = await Assets.load('trail.png')
 export const CAN_WIDTH = window.innerWidth
 export const CAN_HEIGHT = window.innerHeight
 export const mode: MutableValue<GameMode> = new MutableValue('sim')
