@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="./src/styles.css">
+	<title>Smart Rockets</title>
+</head>
+
+<body>
+	<!-- <div class="hero-grid"></div> -->
+
+	<ul id="stats-island">
+		<h3>Stats for nerds</h3>
+		<h4>General</h4>
+		<li>FPS: <span id="fps-span">100</span> </li>
+		<li>Mode: <span id="mode-span">sim</span> </li>
+		<li>Cleared: <span id="cleared-span">false</span> </li>
+		<h4>Population</h4>
+		<li>Generation: <span id="generation-span">0</span></li>
+		<li>Size: <span id="size-span">100</span></li>
+		<li>Lifecycle: <span id="lifecycle-span">0 / 800</span></li>
+		<li>Alive: <span id="alive-span">0</span></li>
+		<li>Crashed: <span id="crashed-span">0</span></li>
+		<li>Completed: <span id="completed-span">0</span></li>
+		<li>Avg fitness: <span id="avg-fitness-span">0</span></li>
+	</ul>
+
+	<div class="status-bar">
+		<div class="fps-wrapper"></div>
+		<div class="lifecycle-wrapper"></div>
+		<button class="show-dist">Show Dist</button>
+		<button class="show-trail">Show Trail</button>
+		<button class="show-target-line">Show Target Line</button>
+	</div>
+	<script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
