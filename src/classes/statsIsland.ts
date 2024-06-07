@@ -40,6 +40,8 @@ export class StatsIsland {
         this.crashedSpan = this.statsIsland?.querySelector('#crashed-span')
         this.completedSpan = this.statsIsland?.querySelector('#completed-span')
         this.avgFitnessSpan = this.statsIsland?.querySelector('#avg-fitness-span')
+
+        this.makeDraggable()
     }
 
     update(ticker: Ticker): void {
@@ -103,5 +105,49 @@ export class StatsIsland {
 
     private updateAvgFitness() {
         if (this.avgFitnessSpan) this.avgFitnessSpan.innerHTML = `0.0`
+    }
+
+    private makeDraggable() {
+        if (!this.statsIsland) return
+
+        let isDragging = false
+        let offsetX: number, offsetY: number
+
+        const MOUSE_DOWN_HANDLER = (event: MouseEvent) => {
+            const RECT = this.statsIsland!.getBoundingClientRect()
+            offsetX = event.clientX - RECT.left
+            offsetY = event.clientY - RECT.top
+            isDragging = true
+
+            document.body.classList.add('no-select')
+
+            // Add the listeners for mousemove and mouseup
+            document.addEventListener('mousemove', MOUSE_MOVE_HANDLER)
+            document.addEventListener('mouseup', MOUSE_UP_HANDLER)
+        }
+
+        const MOUSE_MOVE_HANDLER = (event: MouseEvent) => {
+            if (isDragging) {
+                const NEW_LEFT = event.clientX - offsetX
+                const NEW_TOP = event.clientY - offsetY
+
+                this.statsIsland!.style.left = `${NEW_LEFT}px`
+                this.statsIsland!.style.top = `${NEW_TOP}px`
+                this.statsIsland!.style.right = 'auto'
+                this.statsIsland!.style.bottom = 'auto'
+            }
+        }
+
+        const MOUSE_UP_HANDLER = () => {
+            isDragging = false
+
+            document.body.classList.remove('no-select')
+
+            // Remove the listeners for mousemove and mouseup
+            document.removeEventListener('mousemove', MOUSE_MOVE_HANDLER)
+            document.removeEventListener('mouseup', MOUSE_UP_HANDLER)
+        }
+
+        this.statsIsland.addEventListener('mousedown', MOUSE_DOWN_HANDLER)
     }
 }

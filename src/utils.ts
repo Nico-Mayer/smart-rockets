@@ -4,7 +4,7 @@ export function randomVector(): Point {
     const X: number = Math.random() * 2 - 1
     const Y: number = Math.random() * 2 - 1
 
-    return new Point(X, Y).multiply(new Point(0.3, 0.3))
+    return new Point(X, Y).multiply(new Point(0.6, 0.6))
 }
 
 export function randomColor() {
