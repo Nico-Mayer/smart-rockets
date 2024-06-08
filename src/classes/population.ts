@@ -1,4 +1,4 @@
-import { populationSize } from '../globals'
+import { generation, populationSize } from '../globals'
 import { randomColor, randomIndex } from '../utils'
 import { DNA } from './dna'
 import { Rocket } from './rocket'
@@ -29,26 +29,26 @@ export class RocketPopulation {
     }
 
     evaluate() {
-        const FITNESS_SCALING_FACTOR = 60
+        const MATING_POOL_SIZE_FACTOR = this.getSelectionPressure()
 
-        let totalFitness = 0
-        let maxFitness = 0
+        let totalPopulationFitness = 0
+        let maxFit = 0
 
         this.rockets.forEach((rocket) => {
             rocket.calcFitness()
-            totalFitness += rocket.fitness
-            maxFitness = Math.max(maxFitness, rocket.fitness)
+            totalPopulationFitness += rocket.fitness
+            maxFit = Math.max(maxFit, rocket.fitness)
         })
 
         this.rockets.forEach((rocket) => {
-            rocket.fitness /= maxFitness
+            rocket.fitness /= maxFit
         })
 
         this.matingPool = []
 
         for (let i = 0; i < this.size; i++) {
-            const SELECTION_SIZE = this.rockets[i].fitness * FITNESS_SCALING_FACTOR
-            for (let j = 0; j < SELECTION_SIZE; j++) {
+            const TIMES_TO_ADD_TO_POOL = this.rockets[i].fitness * MATING_POOL_SIZE_FACTOR
+            for (let j = 0; j < TIMES_TO_ADD_TO_POOL; j++) {
                 this.matingPool.push(this.rockets[i])
             }
         }
@@ -57,7 +57,17 @@ export class RocketPopulation {
             this.matingPool = this.rockets.slice()
         }
 
-        this.avgFitness = totalFitness / this.size
+        this.avgFitness = totalPopulationFitness / this.size
+        console.log(this.avgFitness)
+    }
+
+    getSelectionPressure() {
+        // Example strategy: linearly increase factor over generations
+        const INITIAL = 50
+        const FINAL = 200
+        const MAX_GEN = 100
+
+        return INITIAL + (FINAL - INITIAL) * Math.min(generation.get() / MAX_GEN, 1)
     }
 
     selection() {

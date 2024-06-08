@@ -1,5 +1,6 @@
 import { Ticker } from 'pixi.js'
 import {
+    POPULATION,
     alive,
     completed,
     crashed,
@@ -8,6 +9,7 @@ import {
     lifecycle,
     lifespan,
     mode,
+    mutationRate,
     populationSize,
 } from '../globals'
 
@@ -26,6 +28,8 @@ export class StatsIsland {
     private crashedSpan: HTMLElement | null | undefined
     private completedSpan: HTMLElement | null | undefined
     private avgFitnessSpan: HTMLElement | null | undefined
+    private mutationRateSpan: HTMLElement | null | undefined
+    private selectionPressureSpan: HTMLElement | null | undefined
 
     constructor() {
         this.statsIsland = document.querySelector('#stats-island')
@@ -40,6 +44,8 @@ export class StatsIsland {
         this.crashedSpan = this.statsIsland?.querySelector('#crashed-span')
         this.completedSpan = this.statsIsland?.querySelector('#completed-span')
         this.avgFitnessSpan = this.statsIsland?.querySelector('#avg-fitness-span')
+        this.mutationRateSpan = this.statsIsland?.querySelector('#mutation-rate-span')
+        this.selectionPressureSpan = this.statsIsland?.querySelector('#selection-pressure-span')
 
         this.makeDraggable()
     }
@@ -58,6 +64,8 @@ export class StatsIsland {
             this.updateCrashed()
             this.updateCompleted()
             this.updateAvgFitness()
+            this.updateMutationRate()
+            this.updateSelectionPressure()
 
             this.updateCounter = 0
         }
@@ -104,7 +112,19 @@ export class StatsIsland {
     }
 
     private updateAvgFitness() {
-        if (this.avgFitnessSpan) this.avgFitnessSpan.innerHTML = `0.0`
+        if (this.avgFitnessSpan)
+            this.avgFitnessSpan.innerHTML = `${POPULATION.avgFitness.toFixed(2)}`
+    }
+
+    private updateMutationRate() {
+        const MUTATION_RATE = (mutationRate.get() * 100).toFixed(2)
+        if (this.mutationRateSpan) this.mutationRateSpan.innerHTML = `${MUTATION_RATE}%`
+    }
+
+    private updateSelectionPressure() {
+        const SELECTION_PRESSURE = POPULATION.getSelectionPressure()
+        if (this.selectionPressureSpan)
+            this.selectionPressureSpan.innerHTML = `${SELECTION_PRESSURE}`
     }
 
     private makeDraggable() {
@@ -128,8 +148,25 @@ export class StatsIsland {
 
         const MOUSE_MOVE_HANDLER = (event: MouseEvent) => {
             if (isDragging) {
-                const NEW_LEFT = event.clientX - offsetX
-                const NEW_TOP = event.clientY - offsetY
+                let NEW_LEFT = event.clientX - offsetX
+                let NEW_TOP = event.clientY - offsetY
+
+                // Get the width and height of the element
+                const WIDTH = this.statsIsland!.offsetWidth
+                const HEIGHT = this.statsIsland!.offsetHeight
+
+                // Ensure the element stays within the window's bounds
+                if (NEW_LEFT < 0) {
+                    NEW_LEFT = 0
+                } else if (NEW_LEFT + WIDTH > window.innerWidth) {
+                    NEW_LEFT = window.innerWidth - WIDTH
+                }
+
+                if (NEW_TOP < 0) {
+                    NEW_TOP = 0
+                } else if (NEW_TOP + HEIGHT > window.innerHeight) {
+                    NEW_TOP = window.innerHeight - HEIGHT
+                }
 
                 this.statsIsland!.style.left = `${NEW_LEFT}px`
                 this.statsIsland!.style.top = `${NEW_TOP}px`

@@ -1,14 +1,15 @@
 import { Point, Ticker } from 'pixi.js'
 import 'pixi.js/math-extras'
 import { APP } from './app'
+
 import { Obstacle } from './classes/obstacle'
-import { RocketPopulation } from './classes/population'
 import { StatsIsland } from './classes/statsIsland'
 import { StatusBar } from './classes/statusBar'
 import {
     CAN_HEIGHT,
     CAN_WIDTH,
     OBSTACLES,
+    POPULATION,
     alive,
     completed,
     crashed,
@@ -17,6 +18,7 @@ import {
     mode,
     populationSize,
     restartSimulation,
+    updateMutationRate,
 } from './globals'
 
 let prevMode = 'sim'
@@ -31,7 +33,6 @@ let prevMode = 'sim'
     })
     document.body.appendChild(APP.canvas)
 
-    const POPULATION = new RocketPopulation()
     const STATUS_BAR = new StatusBar()
     const STATS_ISLAND = new StatsIsland()
     const UPDATE_INTERVAL = 1000 / 60 // 60 times per second
@@ -39,8 +40,10 @@ let prevMode = 'sim'
     let elapsedUpdate = 0.0
     let lastUpdate = performance.now()
 
-    const OBS_1 = new Obstacle(new Point(0, 500), 4500, 100)
+    const OBS_1 = new Obstacle(new Point(1000, 400), 1500, 50)
+    //const OBS_2 = new Obstacle(new Point(CAN_WIDTH, 800), 3500, 100)
     OBSTACLES.push(OBS_1)
+    //OBSTACLES.push(OBS_2)
 
     APP.ticker.add((ticker) => {
         const CURR_TIME = performance.now()
@@ -73,6 +76,7 @@ let prevMode = 'sim'
                 if (END) {
                     POPULATION.evaluate()
                     POPULATION.selection()
+                    updateMutationRate()
 
                     restartSimulation()
                 }

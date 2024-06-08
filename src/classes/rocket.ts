@@ -30,8 +30,9 @@ export class Rocket extends Sprite {
     crashed: boolean = false
     completed: boolean = false
     fitness: number = 0
-    moves: number = 0
     history: Point[] = []
+    moves: number = 0
+    private colorChangeTimeoutID: number | null = null
 
     constructor(dna: DNA) {
         super(Texture.WHITE)
@@ -82,7 +83,37 @@ export class Rocket extends Sprite {
         const COMPLETED_BONUS = 10000
         const CRASH_PENALTY = 1500
         const WALL_PENALTY = 250
-        const WALLS_BETWEEN = this.countWallsToTarget()
+        const BASE_FITNESS = 1.0 / 16
+        const FITNESS_SCALING_FACTOR = 1000
+
+        const WALLS_BETWEEN_ROCKET_AND_TARGET = this.countWallsToTarget()
+
+        if (this.completed) {
+            this.fitness = BASE_FITNESS + COMPLETED_BONUS / Math.log(this.moves + 1)
+        } else {
+            this.fitness = 1 / Math.log(DIST_TO_TARGET + 1)
+        }
+
+        if (this.crashed) {
+            this.fitness = this.fitness / Math.log(CRASH_PENALTY / this.moves + 1)
+        }
+
+        if (WALLS_BETWEEN_ROCKET_AND_TARGET > 0) {
+            this.fitness =
+                this.fitness / Math.log(WALL_PENALTY * WALLS_BETWEEN_ROCKET_AND_TARGET + 1)
+        }
+
+        this.fitness *= FITNESS_SCALING_FACTOR
+    }
+
+    /* calcFitness() {
+        const DIST_TO_TARGET = pointDistance(this.position, TARGET.position)
+
+        const COMPLETED_BONUS = 10000
+        const CRASH_PENALTY = 1500
+        const WALL_PENALTY = 250
+
+        const WALLS_BETWEEN_ROCKET_AND_TARGET = this.countWallsToTarget()
 
         if (this.completed) {
             this.fitness = 1.0 / 16 + COMPLETED_BONUS / (this.moves * this.moves)
@@ -91,27 +122,32 @@ export class Rocket extends Sprite {
         }
 
         if (this.crashed) {
-            this.fitness /= CRASH_PENALTY / this.moves
+            this.fitness = this.fitness / (CRASH_PENALTY / this.moves)
         }
 
-        if (WALLS_BETWEEN > 0) {
-            this.fitness /= WALL_PENALTY * WALLS_BETWEEN
+        if (WALLS_BETWEEN_ROCKET_AND_TARGET > 0) {
+            this.fitness = this.fitness / (WALL_PENALTY * WALLS_BETWEEN_ROCKET_AND_TARGET)
         }
         this.fitness *= 1000
-    }
+    } */
 
     reset() {
         this.completed = false
         this.crashed = false
         this.alive = true
         this.fitness = 0
-        this.moves = 0
         this.tint = this.dna.bodyColor
         this.position = SPAWN_POS.clone()
         this.alpha = 0.7
+        this.moves = 0
         this.vel.set(0, 0)
         this.acc.set(0, 0)
         this.resetTrail()
+
+        if (this.colorChangeTimeoutID) {
+            clearTimeout(this.colorChangeTimeoutID)
+            this.colorChangeTimeoutID = null
+        }
     }
 
     private applyForce(force: Point) {
@@ -133,7 +169,8 @@ export class Rocket extends Sprite {
         if (COLLIDED) {
             rocketCollided()
             this.tint = '#ff0000'
-            setTimeout(async () => {
+
+            this.colorChangeTimeoutID = setTimeout(async () => {
                 this.tint = '#f0f0f0'
                 this.alpha = 0.3
             }, 800)
@@ -152,6 +189,27 @@ export class Rocket extends Sprite {
             this.alive = false
             rocketCompleted()
         }
+    }
+
+    private pathToTargetIsClear(): boolean {
+        const LINE_TO_TARGET = computePathPoints(this.position, TARGET.position)
+        let clear = true
+
+        for (let j = 0; j < OBSTACLES.length; j++) {
+            const BOUNDS = OBSTACLES[j].getBounds()
+
+            for (let i = 0; i < LINE_TO_TARGET.length; i++) {
+                if (BOUNDS.containsPoint(LINE_TO_TARGET[i].x, LINE_TO_TARGET[i].y)) {
+                    clear = false
+                    break
+                }
+            }
+
+            if (!clear) {
+                break
+            }
+        }
+        return clear
     }
 
     private countWallsToTarget(): number {
@@ -194,7 +252,7 @@ export class Rocket extends Sprite {
             this.lineToTarget.clear()
 
             let lineColor = BLOCKED_COLOR
-            if (this.countWallsToTarget() === 0) {
+            if (this.pathToTargetIsClear()) {
                 lineColor = CLEAR_COLOR
             }
 
@@ -210,11 +268,13 @@ export class Rocket extends Sprite {
         const DIST_TEXT = new BitmapText({ text: '0', style: { fontSize: 15 } })
         getStage().addChild(DIST_TEXT)
         DIST_TEXT.alpha = 0.7
+        DIST_TEXT.zIndex = 2
         return DIST_TEXT
     }
 
     private updateDistText() {
-        const SHOULD_SHOW_TEXT = (showDistance.get() || this.dna.isBest) && this.alive
+        const SHOULD_SHOW_TEXT =
+            (showDistance.get() || this.dna.isBest) && this.alive && !this.completed
         const IS_ON_STAGE = this.distText.parent !== null
 
         if (SHOULD_SHOW_TEXT) {
