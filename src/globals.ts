@@ -37,7 +37,7 @@ export const lifespan: MutableNumber = new MutableNumber(800)
 export const lifecycle: MutableNumber = new MutableNumber(0)
 export const TRAIL_ASSET = await Assets.load('trail.png')
 export const BASE_TRAIL_LENGTH = 40
-export const populationSize: MutableNumber = new MutableNumber(500)
+export const populationSize: MutableNumber = new MutableNumber(350)
 export const POPULATION = new RocketPopulation()
 
 export const mode: MutableValue<GameMode> = new MutableValue('sim')

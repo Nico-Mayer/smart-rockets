@@ -1,8 +1,9 @@
-import { Point, Ticker } from 'pixi.js'
+import { Graphics, Point, Rectangle, Ticker } from 'pixi.js'
 import 'pixi.js/math-extras'
 import { APP } from './app'
 
 import { Obstacle } from './classes/obstacle'
+import { QuadTree } from './classes/quadTree'
 import { StatsIsland } from './classes/statsIsland'
 import { StatusBar } from './classes/statusBar'
 import {
@@ -37,6 +38,9 @@ let prevMode = 'sim'
     const STATS_ISLAND = new StatsIsland()
     const UPDATE_INTERVAL = 1000 / 60 // 60 times per second
 
+    const QUAD_TREE_VISUALIZER = new Graphics()
+    APP.stage.addChild(QUAD_TREE_VISUALIZER)
+
     let elapsedUpdate = 0.0
     let lastUpdate = performance.now()
 
@@ -55,7 +59,6 @@ let prevMode = 'sim'
         // Update loop
         if (elapsedUpdate >= UPDATE_INTERVAL) {
             handleUpdate(ticker)
-
             elapsedUpdate = 0
         }
 
@@ -73,6 +76,13 @@ let prevMode = 'sim'
 
         switch (mode.get()) {
             case 'sim':
+                QUAD_TREE_VISUALIZER.clear()
+                let qt = new QuadTree(new Rectangle(0, 0, CAN_WIDTH, CAN_HEIGHT), 4)
+                POPULATION.rockets.forEach((rocket) => {
+                    qt.insert(rocket.position)
+                })
+                qt.show(QUAD_TREE_VISUALIZER)
+
                 if (END) {
                     POPULATION.evaluate()
                     POPULATION.selection()
