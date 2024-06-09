@@ -1,5 +1,5 @@
 import { BitmapText, Graphics, MeshRope, Point, Sprite, Texture } from 'pixi.js'
-import { getStage } from '../app'
+import { TRAIL_ASSET, getStage } from '../app'
 import {
     BASE_TRAIL_LENGTH,
     CAN_HEIGHT,
@@ -7,7 +7,6 @@ import {
     OBSTACLES,
     SPAWN_POS,
     TARGET,
-    TRAIL_ASSET,
     darkMode,
     lifecycle,
     lifespan,
@@ -293,7 +292,7 @@ export class Rocket extends Sprite {
         const DIST_TEXT = new BitmapText({ text: '0', style: { fontSize: 15 } })
         getStage().addChild(DIST_TEXT)
         DIST_TEXT.alpha = 0.7
-        DIST_TEXT.zIndex = 2
+        DIST_TEXT.zIndex = 0
         DIST_TEXT.tint = darkMode.value ? FONT_LIGHT_COLOR : FONT_DARK_COLOR
         return DIST_TEXT
     }
@@ -302,13 +301,18 @@ export class Rocket extends Sprite {
         const SHOULD_SHOW_TEXT =
             (showDistance.get() || this.dna.isBest) && this.alive && !this.completed
         const IS_ON_STAGE = this.distText.parent !== null
+        const UPDATE_INTERVAL = 10
+
+        const X_OFFSET = 10
+        const Y_OFFSET = -10
 
         if (SHOULD_SHOW_TEXT) {
             if (!IS_ON_STAGE) {
                 getStage().addChild(this.distText)
             }
+            this.distText.position.set(this.position.x + X_OFFSET, this.position.y + Y_OFFSET)
 
-            this.distText.position.set(this.position.x + this.height, this.position.y)
+            if (this.moves % UPDATE_INTERVAL !== 0) return
             this.distText.text = Math.floor(
                 pointDistance(this.position, TARGET.position)
             ).toString()

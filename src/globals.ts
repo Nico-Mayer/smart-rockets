@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Assets, Point } from 'pixi.js'
+import { Point } from 'pixi.js'
 import { Obstacle } from './classes/obstacle'
 import { RocketPopulation } from './classes/population'
 
@@ -90,7 +90,6 @@ export const CAN_HEIGHT = window.innerHeight
 export const SPAWN_POS = new Point(CAN_WIDTH / 2, CAN_HEIGHT - 20)
 export const lifespan: MutableNumber = new MutableNumber(800)
 export const lifecycle: MutableNumber = new MutableNumber(0)
-export const TRAIL_ASSET = await Assets.load('trail.png')
 export const BASE_TRAIL_LENGTH = 40
 export const populationSize: PersistentMutableValue<number> = new PersistentMutableValue(
     'populationSize',
