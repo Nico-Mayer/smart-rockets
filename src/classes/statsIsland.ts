@@ -78,7 +78,7 @@ export class StatsIsland {
     }
 
     private updateMode() {
-        if (this.modeSpan) this.modeSpan.innerHTML = mode.get()
+        if (this.modeSpan) this.modeSpan.innerHTML = mode.value
     }
 
     private updateCleared() {

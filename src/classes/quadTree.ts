@@ -1,4 +1,8 @@
 import { Graphics, Point, Rectangle } from 'pixi.js'
+import { darkMode } from '../globals'
+
+const COLOR_LIGHT = 0xa5d8ff
+const COLOR_DARK = 0x154163
 
 export class QuadTree {
     public points: Point[] = []
@@ -18,27 +22,31 @@ export class QuadTree {
     insert(point: Point) {
         if (!this.boundary.contains(point.x, point.y)) return
 
-        if (this.points.length < this.capacity) {
+        if (this.points.length < this.capacity && !this.divided) {
             this.points.push(point)
         } else {
             if (!this.divided) {
                 this.subdivide()
             }
+            const POINTS = [...this.points, point]
 
-            this.topLeft?.insert(point)
-            this.topRight?.insert(point)
-            this.bottomLeft?.insert(point)
-            this.bottomRight?.insert(point)
+            POINTS.forEach((point) => {
+                this.topLeft?.insert(point)
+                this.topRight?.insert(point)
+                this.bottomLeft?.insert(point)
+                this.bottomRight?.insert(point)
+            })
+            this.points = []
         }
     }
 
     subdivide() {
-        const { x, y, width, height } = this.boundary
+        const { x: X, y: Y, width: WIDTH, height: HEIGHT } = this.boundary
 
-        const TL = new Rectangle(x, y, width / 2, height / 2)
-        const TR = new Rectangle(x + width / 2, y, width / 2, height / 2)
-        const BL = new Rectangle(x, y + height / 2, width / 2, height / 2)
-        const BR = new Rectangle(x + width / 2, y + height / 2, width / 2, height / 2)
+        const TL = new Rectangle(X, Y, WIDTH / 2, HEIGHT / 2)
+        const TR = new Rectangle(X + WIDTH / 2, Y, WIDTH / 2, HEIGHT / 2)
+        const BL = new Rectangle(X, Y + HEIGHT / 2, WIDTH / 2, HEIGHT / 2)
+        const BR = new Rectangle(X + WIDTH / 2, Y + HEIGHT / 2, WIDTH / 2, HEIGHT / 2)
 
         this.topLeft = new QuadTree(TL, this.capacity)
         this.topRight = new QuadTree(TR, this.capacity)
@@ -49,9 +57,9 @@ export class QuadTree {
     }
 
     show(graphics: Graphics) {
-        const { x, y, width, height } = this.boundary
-        graphics.rect(x, y, width, height)
-        graphics.stroke({ width: 1, color: 0xfeeb77 })
+        const { x: X, y: Y, width: WIDTH, height: HEIGHT } = this.boundary
+        graphics.rect(X, Y, WIDTH, HEIGHT)
+        graphics.stroke({ width: 1, color: darkMode.value ? COLOR_DARK : COLOR_LIGHT })
 
         if (this.divided) {
             this.topLeft?.show(graphics)

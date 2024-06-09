@@ -8,6 +8,7 @@ import {
     SPAWN_POS,
     TARGET,
     TRAIL_ASSET,
+    darkMode,
     lifecycle,
     lifespan,
     rocketCollided,
@@ -18,6 +19,15 @@ import {
 } from '../globals'
 import { computePathPoints, pointDistance } from '../utils'
 import { DNA } from './dna'
+
+const FONT_LIGHT_COLOR = 0x86888a
+const FONT_DARK_COLOR = 0x747678
+const LINE_COLOR_BLOCKED = 0xfa5252
+const LINE_COLOR_CLEAR = 0x69db7c
+
+const COLOR_DEAD_LIGHT_MODE = 0x1b1b1f
+const COLOR_DEAD_DARK_MODE = 0xf0f0f0
+const COLOR_CRASHED = 0xfa6969
 
 export class Rocket extends Sprite {
     dna: DNA
@@ -41,6 +51,11 @@ export class Rocket extends Sprite {
         this.trail = this.setupTrail()
         this.distText = this.setupDistText()
         this.lineToTarget = this.setupLineToTarget()
+
+        darkMode.addListener((isDarkMode) => {
+            if (!this.distText) return
+            this.distText.tint = isDarkMode ? FONT_LIGHT_COLOR : FONT_DARK_COLOR
+        })
     }
 
     private setupRocket() {
@@ -52,6 +67,14 @@ export class Rocket extends Sprite {
         this.tint = this.dna.bodyColor
         this.position = SPAWN_POS.clone()
         getStage().addChild(this)
+    }
+
+    removeFromStage() {
+        const STAGE = getStage()
+        STAGE.removeChild(this.lineToTarget)
+        STAGE.removeChild(this.trail)
+        STAGE.removeChild(this.distText)
+        STAGE.removeChild(this)
     }
 
     update() {
@@ -168,16 +191,21 @@ export class Rocket extends Sprite {
 
         if (COLLIDED) {
             rocketCollided()
-            this.tint = '#ff0000'
+            this.tint = COLOR_CRASHED
 
             this.colorChangeTimeoutID = setTimeout(async () => {
-                this.tint = '#f0f0f0'
+                this.tint = darkMode.value ? COLOR_DEAD_DARK_MODE : COLOR_DEAD_LIGHT_MODE
                 this.alpha = 0.3
             }, 800)
         }
 
         this.crashed = COLLIDED
         this.alive = !COLLIDED
+
+        if (this.position.x < 0) this.position.x = 1
+        if (this.position.x > CAN_WIDTH) this.position.x = CAN_WIDTH - 1
+        if (this.position.y < 0) this.position.y = 1
+        if (this.position.y > CAN_HEIGHT) this.position.y = CAN_HEIGHT - 1
     }
 
     private checkTargetHit() {
@@ -239,9 +267,6 @@ export class Rocket extends Sprite {
     }
 
     private updateLineToTarget() {
-        const BLOCKED_COLOR = 0xff0000
-        const CLEAR_COLOR = 0x12d900
-
         const SHOULD_SHOW_LINE = showTargetLine.get() && this.alive
         const IS_ON_STAGE = this.lineToTarget.parent !== null
 
@@ -251,14 +276,14 @@ export class Rocket extends Sprite {
             }
             this.lineToTarget.clear()
 
-            let lineColor = BLOCKED_COLOR
+            let lineColor = LINE_COLOR_BLOCKED
             if (this.pathToTargetIsClear()) {
-                lineColor = CLEAR_COLOR
+                lineColor = LINE_COLOR_CLEAR
             }
 
             this.lineToTarget.moveTo(this.position.x, this.position.y)
             this.lineToTarget.lineTo(TARGET.position.x, TARGET.position.y)
-            this.lineToTarget.stroke({ width: 1, color: lineColor, alpha: 0.2 })
+            this.lineToTarget.stroke({ width: 2, color: lineColor, alpha: 0.2 })
         } else if (IS_ON_STAGE) {
             getStage().removeChild(this.lineToTarget)
         }
@@ -269,6 +294,7 @@ export class Rocket extends Sprite {
         getStage().addChild(DIST_TEXT)
         DIST_TEXT.alpha = 0.7
         DIST_TEXT.zIndex = 2
+        DIST_TEXT.tint = darkMode.value ? FONT_LIGHT_COLOR : FONT_DARK_COLOR
         return DIST_TEXT
     }
 

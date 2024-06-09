@@ -28,6 +28,41 @@ export class RocketPopulation {
         }
     }
 
+    changePopulationSize(newSize: number) {
+        const OLD_SIZE = this.size
+        const DELTA = newSize - OLD_SIZE
+        this.size = newSize
+
+        if (DELTA > 0) {
+            for (let i = 0; i < DELTA; i++) {
+                const NEW_ROCKET = new Rocket(new DNA([], randomColor(), randomColor()))
+                this.rockets.push(NEW_ROCKET)
+            }
+        } else {
+            for (let i = 0; i < -DELTA; i++) {
+                const ROCKET_TO_REMOVE = this.rockets.pop()
+                if (ROCKET_TO_REMOVE) {
+                    ROCKET_TO_REMOVE.removeFromStage()
+                }
+            }
+        }
+    }
+
+    reset() {
+        for (let i = 0; i < this.size; i++) {
+            this.rockets[i].removeFromStage()
+        }
+
+        this.size = populationSize.get()
+        this.avgFitness = 0
+        this.matingPool = []
+        this.rockets = []
+
+        for (let i = 0; i < this.size; i++) {
+            this.rockets[i] = new Rocket(new DNA([], randomColor(), randomColor()))
+        }
+    }
+
     evaluate() {
         const MATING_POOL_SIZE_FACTOR = this.getSelectionPressure()
 
@@ -58,7 +93,6 @@ export class RocketPopulation {
         }
 
         this.avgFitness = totalPopulationFitness / this.size
-        console.log(this.avgFitness)
     }
 
     getSelectionPressure() {
