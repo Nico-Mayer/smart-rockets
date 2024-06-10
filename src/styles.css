@@ -244,11 +244,11 @@ body {
 }
 
 .checkbox-wrapper input[type='checkbox'] {
-    --active: var(--color-primary);
-    --active-inner: var(--color-surface-primary-container);
+    --active: var(--color-surface-primary-container);
+    --active-inner: var(--color-on-primary-container);
     --focus: var(--color-primary);
-    --border: var(--color-primary);
-    --border-hover: var(--color-primary-darkest);
+    --border: var(--color-surface-primary-container);
+    --border-hover: var(--color-primary);
     --background: var(--color-surface-mid);
     --disabled: var(--checkbox-disabled);
     --disabled-inner: var(--checkbox-disabled-inner);

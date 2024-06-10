@@ -67,8 +67,6 @@ let prevMode = 'sim'
             handleUpdate(ticker)
             elapsedUpdate = 0
         }
-
-        handleRender()
     })
 
     function handleUpdate(ticker: Ticker) {
@@ -121,9 +119,5 @@ let prevMode = 'sim'
                 prevMode = 'stop'
                 break
         }
-    }
-
-    function handleRender() {
-        POPULATION.render()
     }
 })()

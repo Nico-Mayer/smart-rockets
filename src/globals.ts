@@ -90,7 +90,7 @@ export const CAN_HEIGHT = window.innerHeight
 export const SPAWN_POS = new Point(CAN_WIDTH / 2, CAN_HEIGHT - 20)
 export const lifespan: MutableNumber = new MutableNumber(800)
 export const lifecycle: MutableNumber = new MutableNumber(0)
-export const BASE_TRAIL_LENGTH = 40
+export const ROCKET_TRAIL_LENGTH = 25
 export const populationSize: PersistentMutableValue<number> = new PersistentMutableValue(
     'populationSize',
     350

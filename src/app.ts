@@ -7,3 +7,4 @@ export function getStage() {
 }
 
 export const TRAIL_ASSET = await Assets.load('trail.png')
+export const ROCKET_ASSET = await Assets.load('rocket.png')

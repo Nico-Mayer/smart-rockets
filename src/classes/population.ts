@@ -16,12 +16,6 @@ export class RocketPopulation {
         }
     }
 
-    render() {
-        for (let i = 0; i < this.size; i++) {
-            this.rockets[i].render()
-        }
-    }
-
     update() {
         for (let i = 0; i < this.size; i++) {
             this.rockets[i].update()
@@ -42,7 +36,7 @@ export class RocketPopulation {
             for (let i = 0; i < -DELTA; i++) {
                 const ROCKET_TO_REMOVE = this.rockets.pop()
                 if (ROCKET_TO_REMOVE) {
-                    ROCKET_TO_REMOVE.removeFromStage()
+                    ROCKET_TO_REMOVE.delete()
                 }
             }
         }
@@ -50,7 +44,7 @@ export class RocketPopulation {
 
     reset() {
         for (let i = 0; i < this.size; i++) {
-            this.rockets[i].removeFromStage()
+            this.rockets[i].delete()
         }
 
         this.size = populationSize.get()
