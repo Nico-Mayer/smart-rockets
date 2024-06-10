@@ -27,18 +27,22 @@ export function randomIndex(length: number): number {
     return Math.floor(Math.random() * length)
 }
 
-export function computePathPoints(pointA: Point, pointB: Point): Point[] {
+export function computePathPoints(pointA: Point, pointB: Point, interval: number = 1): Point[] {
     const DIFF_X = pointB.x - pointA.x
     const DIFF_Y = pointB.y - pointA.y
     const DISTANCE = pointDistance(pointA, pointB)
-    const POINT_NUM = Math.floor(DISTANCE)
+    const POINT_NUM = Math.floor(DISTANCE / interval)
 
     const INTERVAL_X = DIFF_X / (POINT_NUM + 1)
     const INTERVAL_Y = DIFF_Y / (POINT_NUM + 1)
 
-    const POINTS = []
-    for (let i = 1; i <= POINT_NUM; i++) {
-        POINTS.push(new Point(pointA.x + INTERVAL_X * i, pointA.y + INTERVAL_Y * i))
+    if (POINT_NUM === 0) {
+        return []
+    }
+
+    const POINTS = new Array(POINT_NUM)
+    for (let i = 0; i < POINT_NUM; i++) {
+        POINTS[i] = new Point(pointA.x + INTERVAL_X * (i + 1), pointA.y + INTERVAL_Y * (i + 1))
     }
     return POINTS
 }

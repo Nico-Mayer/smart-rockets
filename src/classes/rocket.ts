@@ -1,10 +1,10 @@
-import { BitmapText, Graphics, MeshRope, Point, Sprite, Texture } from 'pixi.js'
-import { TRAIL_ASSET, getStage } from '../app'
+import { BitmapText, Graphics, MeshRope, Point, Sprite } from 'pixi.js'
+import { ROCKET_ASSET, TRAIL_ASSET, getStage } from '../app'
 import {
-    BASE_TRAIL_LENGTH,
     CAN_HEIGHT,
     CAN_WIDTH,
     OBSTACLES,
+    ROCKET_TRAIL_LENGTH,
     SPAWN_POS,
     TARGET,
     darkMode,
@@ -19,8 +19,6 @@ import {
 import { computePathPoints, pointDistance } from '../utils'
 import { DNA } from './dna'
 
-const FONT_LIGHT_COLOR = 0x86888a
-const FONT_DARK_COLOR = 0x747678
 const LINE_COLOR_BLOCKED = 0xfa5252
 const LINE_COLOR_CLEAR = 0x69db7c
 
@@ -28,52 +26,46 @@ const COLOR_DEAD_LIGHT_MODE = 0x1b1b1f
 const COLOR_DEAD_DARK_MODE = 0xf0f0f0
 const COLOR_CRASHED = 0xfa6969
 
+type RocketState = 'alive' | 'crashed' | 'completed'
+
 export class Rocket extends Sprite {
+    state: RocketState = 'alive'
     dna: DNA
     lineToTarget: Graphics
     trail: MeshRope
     distText: BitmapText
     vel: Point = new Point(0, 0)
     acc: Point = new Point(0, 0)
-    alive: boolean = true
-    crashed: boolean = false
-    completed: boolean = false
     fitness: number = 0
-    history: Point[] = []
+    history: Point[] = new Array(ROCKET_TRAIL_LENGTH)
     moves: number = 0
+    pathToTargetClear: boolean = false
     private colorChangeTimeoutID: number | null = null
 
     constructor(dna: DNA) {
-        super(Texture.WHITE)
+        super(ROCKET_ASSET)
         this.dna = dna
         this.setupRocket()
         this.trail = this.setupTrail()
         this.distText = this.setupDistText()
         this.lineToTarget = this.setupLineToTarget()
-
-        darkMode.addListener((isDarkMode) => {
-            if (!this.distText) return
-            this.distText.tint = isDarkMode ? FONT_LIGHT_COLOR : FONT_DARK_COLOR
-        })
     }
 
     private setupRocket() {
-        this.width = 25
-        this.height = 5
+        this.scale.set(0.7)
         this.anchor.set(0.5)
         this.alpha = 0.7
         this.zIndex = 1
         this.tint = this.dna.bodyColor
-        this.position = SPAWN_POS.clone()
+        this.position = SPAWN_POS
         getStage().addChild(this)
     }
 
-    removeFromStage() {
-        const STAGE = getStage()
-        STAGE.removeChild(this.lineToTarget)
-        STAGE.removeChild(this.trail)
-        STAGE.removeChild(this.distText)
-        STAGE.removeChild(this)
+    delete() {
+        this.trail.destroy()
+        this.distText.destroy()
+        this.lineToTarget.destroy()
+        this.destroy()
     }
 
     update() {
@@ -81,23 +73,21 @@ export class Rocket extends Sprite {
         this.updateDistText()
         this.updateLineToTarget()
 
-        if (!this.alive || this.crashed || this.completed) return
+        if (this.state !== 'alive') return
 
         this.vel = this.vel.add(this.acc)
         this.position = this.position.add(this.vel)
         this.acc.set(0, 0)
 
         if (lifecycle.get() < lifespan.get()) {
-            this.applyForce(this.dna.genes[lifecycle.get()])
+            const FORCE = this.dna.genes[lifecycle.get()]
+            this.acc = this.acc.add(FORCE)
         }
+        this.rotation = Math.atan2(this.vel.y, this.vel.x)
 
         this.checkTargetHit()
         this.checkForCrash()
         this.moves++
-    }
-
-    render() {
-        this.rotation = Math.atan2(this.vel.y, this.vel.x)
     }
 
     calcFitness() {
@@ -110,13 +100,13 @@ export class Rocket extends Sprite {
 
         const WALLS_BETWEEN_ROCKET_AND_TARGET = this.countWallsToTarget()
 
-        if (this.completed) {
+        if (this.state === 'completed') {
             this.fitness = BASE_FITNESS + COMPLETED_BONUS / Math.log(this.moves + 1)
         } else {
             this.fitness = 1 / Math.log(DIST_TO_TARGET + 1)
         }
 
-        if (this.crashed) {
+        if (this.state === 'crashed') {
             this.fitness = this.fitness / Math.log(CRASH_PENALTY / this.moves + 1)
         }
 
@@ -154,12 +144,11 @@ export class Rocket extends Sprite {
     } */
 
     reset() {
-        this.completed = false
-        this.crashed = false
-        this.alive = true
+        this.state = 'alive'
         this.fitness = 0
         this.tint = this.dna.bodyColor
-        this.position = SPAWN_POS.clone()
+        this.distText.tint = this.dna.bodyColor
+        this.position = SPAWN_POS
         this.alpha = 0.7
         this.moves = 0
         this.vel.set(0, 0)
@@ -170,10 +159,6 @@ export class Rocket extends Sprite {
             clearTimeout(this.colorChangeTimeoutID)
             this.colorChangeTimeoutID = null
         }
-    }
-
-    private applyForce(force: Point) {
-        this.acc = this.acc.add(force)
     }
 
     private checkForCrash() {
@@ -196,10 +181,9 @@ export class Rocket extends Sprite {
                 this.tint = darkMode.value ? COLOR_DEAD_DARK_MODE : COLOR_DEAD_LIGHT_MODE
                 this.alpha = 0.3
             }, 800)
-        }
 
-        this.crashed = COLLIDED
-        this.alive = !COLLIDED
+            this.state = 'crashed'
+        }
 
         if (this.position.x < 0) this.position.x = 1
         if (this.position.x > CAN_WIDTH) this.position.x = CAN_WIDTH - 1
@@ -212,14 +196,13 @@ export class Rocket extends Sprite {
         const TARGET_HIT = TARGET_BOUNDS.containsPoint(this.position.x, this.position.y)
 
         if (TARGET_HIT) {
-            this.completed = true
-            this.alive = false
+            this.state = 'completed'
             rocketCompleted()
         }
     }
 
     private pathToTargetIsClear(): boolean {
-        const LINE_TO_TARGET = computePathPoints(this.position, TARGET.position)
+        const LINE_TO_TARGET = computePathPoints(this.position, TARGET.position, 20)
         let clear = true
 
         for (let j = 0; j < OBSTACLES.length; j++) {
@@ -266,8 +249,9 @@ export class Rocket extends Sprite {
     }
 
     private updateLineToTarget() {
-        const SHOULD_SHOW_LINE = showTargetLine.get() && this.alive
+        const SHOULD_SHOW_LINE = showTargetLine.get() && this.state === 'alive'
         const IS_ON_STAGE = this.lineToTarget.parent !== null
+        const UPDATE_INTERVAL = 10
 
         if (SHOULD_SHOW_LINE) {
             if (!IS_ON_STAGE) {
@@ -275,14 +259,15 @@ export class Rocket extends Sprite {
             }
             this.lineToTarget.clear()
 
-            let lineColor = LINE_COLOR_BLOCKED
-            if (this.pathToTargetIsClear()) {
-                lineColor = LINE_COLOR_CLEAR
+            if (this.moves % UPDATE_INTERVAL === 0) {
+                this.pathToTargetClear = this.pathToTargetIsClear()
             }
+
+            const LINE_COLOR = this.pathToTargetClear ? LINE_COLOR_CLEAR : LINE_COLOR_BLOCKED
 
             this.lineToTarget.moveTo(this.position.x, this.position.y)
             this.lineToTarget.lineTo(TARGET.position.x, TARGET.position.y)
-            this.lineToTarget.stroke({ width: 2, color: lineColor, alpha: 0.2 })
+            this.lineToTarget.stroke({ width: 2, color: LINE_COLOR, alpha: 0.2 })
         } else if (IS_ON_STAGE) {
             getStage().removeChild(this.lineToTarget)
         }
@@ -293,13 +278,12 @@ export class Rocket extends Sprite {
         getStage().addChild(DIST_TEXT)
         DIST_TEXT.alpha = 0.7
         DIST_TEXT.zIndex = 0
-        DIST_TEXT.tint = darkMode.value ? FONT_LIGHT_COLOR : FONT_DARK_COLOR
+        DIST_TEXT.tint = this.dna.bodyColor
         return DIST_TEXT
     }
 
     private updateDistText() {
-        const SHOULD_SHOW_TEXT =
-            (showDistance.get() || this.dna.isBest) && this.alive && !this.completed
+        const SHOULD_SHOW_TEXT = (showDistance.get() || this.dna.isBest) && this.state === 'alive'
         const IS_ON_STAGE = this.distText.parent !== null
         const UPDATE_INTERVAL = 10
 
@@ -322,7 +306,7 @@ export class Rocket extends Sprite {
     }
 
     private setupTrail(): MeshRope {
-        this.history = Array(BASE_TRAIL_LENGTH).fill(this.position.clone())
+        this.history.fill(this.position.clone())
         const TRAIL = new MeshRope({ texture: TRAIL_ASSET, points: this.history })
         TRAIL.alpha = 0.35
         TRAIL.tint = this.dna.trailColor
@@ -342,7 +326,7 @@ export class Rocket extends Sprite {
             }
 
             this.history.push(this.position.clone())
-            if (this.history.length > BASE_TRAIL_LENGTH) {
+            if (this.history.length > ROCKET_TRAIL_LENGTH) {
                 this.history.shift()
             }
         } else if (IS_ON_STAGE) {
