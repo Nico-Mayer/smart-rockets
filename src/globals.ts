@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { Point } from 'pixi.js'
-import { Obstacle } from './classes/obstacle'
+import { v4 as uuidv4 } from 'uuid'
+import { Obstacle, ObstacleData } from './classes/obstacle'
 import { RocketPopulation } from './classes/population'
 
 export type GameMode = 'sim' | 'edit' | 'stop'
@@ -15,18 +16,6 @@ class MutableValue<T> {
     }
     set(value: T): void {
         this._value = value
-    }
-}
-
-class MutableNumber extends MutableValue<number> {
-    constructor(value: number) {
-        super(value)
-    }
-    increment(): void {
-        this.set(this.get() + 1)
-    }
-    decrement(): void {
-        this.set(this.get() - 1)
     }
 }
 
@@ -69,6 +58,40 @@ class Signal<T> {
     }
 }
 
+const DEFAULT_OBS_DATA: ObstacleData[] = [{ id: uuidv4(), x: 500, y: 400, width: 500, height: 100 }]
+
+class ObstacleStore {
+    private _key: string = 'obstacleData'
+    private obstacleData: ObstacleData[] = []
+    obstacles: Obstacle[] = []
+
+    constructor() {
+        this.obstacleData = JSON.parse(localStorage.getItem(this._key)!) || []
+
+        if (this.obstacleData.length === 0) {
+            this.obstacleData = [...DEFAULT_OBS_DATA]
+            localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+        }
+        this.obstacles = this.obstacleData.map((data) => {
+            return new Obstacle(data)
+        })
+    }
+
+    addObstacle(obstacle: Obstacle): void {
+        this.obstacles.push(obstacle)
+        this.obstacleData.push(obstacle.getData())
+        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+    }
+
+    editObstacle(obstacle: ObstacleData): void {
+        const index = this.obstacleData.findIndex((obs) => obs.id === obstacle.id)
+        this.obstacleData[index] = obstacle
+
+        console.log(this.obstacleData)
+        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+    }
+}
+
 export const darkMode: Signal<boolean> = new Signal(checkIfDarkMode())
 
 function checkIfDarkMode() {
@@ -88,8 +111,8 @@ export const settingsOpen: MutableValue<boolean> = new PersistentMutableValue('s
 export const CAN_WIDTH = window.innerWidth
 export const CAN_HEIGHT = window.innerHeight
 export const SPAWN_POS = new Point(CAN_WIDTH / 2, CAN_HEIGHT - 20)
-export const lifespan: MutableNumber = new MutableNumber(800)
-export const lifecycle: MutableNumber = new MutableNumber(0)
+export const lifespan: MutableValue<number> = new MutableValue(800)
+
 export const ROCKET_TRAIL_LENGTH = 25
 export const populationSize: PersistentMutableValue<number> = new PersistentMutableValue(
     'populationSize',
@@ -99,16 +122,19 @@ export const POPULATION = new RocketPopulation()
 
 export const mode: Signal<GameMode> = new Signal('sim' as GameMode)
 
-export const TARGET = new Obstacle(new Point(CAN_WIDTH / 2, 120), 60, 60)
+export const TARGET = new Obstacle({
+    id: 'target',
+    x: CAN_WIDTH / 2,
+    y: 120,
+    width: 60,
+    height: 60,
+})
 
-export const alive: MutableNumber = new MutableNumber(populationSize.get())
-export const crashed: MutableNumber = new MutableNumber(0)
-export const completed: MutableNumber = new MutableNumber(0)
 export const BASE_MUTATION_RATE = 0.015
 export const HIGH_MUTATION_INTERVAL = 10
 
 export const finished: MutableValue<boolean> = new MutableValue(false)
-export const generation: MutableNumber = new MutableNumber(0)
+
 export const showTrail: MutableValue<boolean> = new PersistentMutableValue('showTrail', false)
 export const showTargetLine: MutableValue<boolean> = new PersistentMutableValue(
     'showTargetLine',
@@ -116,38 +142,38 @@ export const showTargetLine: MutableValue<boolean> = new PersistentMutableValue(
 )
 
 export const showDistance: MutableValue<boolean> = new PersistentMutableValue('showDist', false)
-export const OBSTACLES: Obstacle[] = []
-export const mutationRate: MutableNumber = new MutableNumber(BASE_MUTATION_RATE)
+export const OBSTACLE_STORE: ObstacleStore = new ObstacleStore()
+export const mutationRate: MutableValue<number> = new MutableValue(BASE_MUTATION_RATE)
 
 export const showQuadTree: MutableValue<boolean> = new PersistentMutableValue('showQt', false)
 
 // Methods
 export const rocketCollided = (): void => {
-    crashed.increment()
-    alive.decrement()
+    POPULATION.crashed++
+    POPULATION.alive--
 }
 
 export const rocketCompleted = (): void => {
-    completed.increment()
+    POPULATION.completed++
     if (!finished.get()) {
         finished.set(true)
     }
 }
 
 export const nextGeneration = (): void => {
-    generation.increment()
-    lifecycle.set(0)
-    alive.set(populationSize.get())
-    crashed.set(0)
-    completed.set(0)
+    POPULATION.generation++
+    POPULATION.lifecycle = 0
+    POPULATION.alive = populationSize.get()
+    POPULATION.crashed = 0
+    POPULATION.completed = 0
 }
 
 export const restartSimulation = (): void => {
-    generation.set(0)
-    lifecycle.set(0)
-    alive.set(populationSize.get())
-    crashed.set(0)
-    completed.set(0)
+    POPULATION.generation = 0
+    POPULATION.lifecycle = 0
+    POPULATION.alive = populationSize.get()
+    POPULATION.crashed = 0
+    POPULATION.completed = 0
     finished.set(false)
     POPULATION.reset()
 }
@@ -157,13 +183,13 @@ export const updateMutationRate = () => {
     const HIGH_MUTATION_INCREMENT = 0.03
     const FINISHED_MUTATION_FACTOR = 0.5
 
-    let newMutationRate = BASE_MUTATION_RATE * Math.pow(BASE, generation.get())
+    let newMutationRate = BASE_MUTATION_RATE * Math.pow(BASE, POPULATION.generation)
 
     if (finished.get()) {
         newMutationRate *= FINISHED_MUTATION_FACTOR
     }
 
-    if (generation.get() % HIGH_MUTATION_INTERVAL === 0 && generation.get() !== 0) {
+    if (POPULATION.generation % HIGH_MUTATION_INTERVAL === 0 && POPULATION.generation !== 0) {
         newMutationRate += HIGH_MUTATION_INCREMENT
     }
 

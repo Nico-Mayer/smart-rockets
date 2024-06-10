@@ -6,11 +6,9 @@ export class DNA {
     genes: Point[]
     bodyColor: string
     trailColor: string
-    // mutationRate: number
     alpha: number = 150
     alphaTrail: number = 80
     isBest: boolean = false
-    colorMutate: boolean = false
     // highMutateGen: boolean = false
 
     constructor(genes: Point[] = [], bodyColor: string, trailColor: string) {

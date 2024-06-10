@@ -3,12 +3,11 @@ import { ROCKET_ASSET, TRAIL_ASSET, getStage } from '../app'
 import {
     CAN_HEIGHT,
     CAN_WIDTH,
-    OBSTACLES,
+    OBSTACLE_STORE,
     ROCKET_TRAIL_LENGTH,
     SPAWN_POS,
     TARGET,
     darkMode,
-    lifecycle,
     lifespan,
     rocketCollided,
     rocketCompleted,
@@ -68,7 +67,7 @@ export class Rocket extends Sprite {
         this.destroy()
     }
 
-    update() {
+    update(lifecycle: number) {
         this.updateTrail()
         this.updateDistText()
         this.updateLineToTarget()
@@ -79,8 +78,8 @@ export class Rocket extends Sprite {
         this.position = this.position.add(this.vel)
         this.acc.set(0, 0)
 
-        if (lifecycle.get() < lifespan.get()) {
-            const FORCE = this.dna.genes[lifecycle.get()]
+        if (lifecycle < lifespan.get()) {
+            const FORCE = this.dna.genes[lifecycle]
             this.acc = this.acc.add(FORCE)
         }
         this.rotation = Math.atan2(this.vel.y, this.vel.x)
@@ -169,7 +168,7 @@ export class Rocket extends Sprite {
             this.position.y > CAN_HEIGHT
         const COLLIDED =
             OUT_OF_BOUNDS ||
-            OBSTACLES.some((obstacle) =>
+            OBSTACLE_STORE.obstacles.some((obstacle) =>
                 obstacle.getBounds().containsPoint(this.position.x, this.position.y)
             )
 
@@ -205,8 +204,8 @@ export class Rocket extends Sprite {
         const LINE_TO_TARGET = computePathPoints(this.position, TARGET.position, 20)
         let clear = true
 
-        for (let j = 0; j < OBSTACLES.length; j++) {
-            const BOUNDS = OBSTACLES[j].getBounds()
+        for (let j = 0; j < OBSTACLE_STORE.obstacles.length; j++) {
+            const BOUNDS = OBSTACLE_STORE.obstacles[j].getBounds()
 
             for (let i = 0; i < LINE_TO_TARGET.length; i++) {
                 if (BOUNDS.containsPoint(LINE_TO_TARGET[i].x, LINE_TO_TARGET[i].y)) {
@@ -226,7 +225,7 @@ export class Rocket extends Sprite {
         const LINE_TO_TARGET = computePathPoints(this.position, TARGET.position)
         let wallCollision = 0
 
-        OBSTACLES.forEach((obstacle) => {
+        OBSTACLE_STORE.obstacles.forEach((obstacle) => {
             const BOUNDS = obstacle.getBounds()
             let collided = false
 

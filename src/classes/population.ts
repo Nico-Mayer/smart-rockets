@@ -1,11 +1,16 @@
-import { generation, populationSize } from '../globals'
+import { lifespan, populationSize } from '../globals'
 import { randomColor, randomIndex } from '../utils'
 import { DNA } from './dna'
 import { Rocket } from './rocket'
 
 export class RocketPopulation {
-    rockets: Rocket[] = []
+    generation: number = 0
+    lifecycle: number = 0
     size: number = populationSize.get()
+    alive: number = populationSize.get()
+    crashed: number = 0
+    completed: number = 0
+    rockets: Rocket[] = []
     matingPool: Rocket[] = []
     avgFitness: number = 0
     pickRate: number = 0.01
@@ -18,8 +23,9 @@ export class RocketPopulation {
 
     update() {
         for (let i = 0; i < this.size; i++) {
-            this.rockets[i].update()
+            this.rockets[i].update(this.lifecycle)
         }
+        this.lifecycle++
     }
 
     changePopulationSize(newSize: number) {
@@ -40,13 +46,32 @@ export class RocketPopulation {
                 }
             }
         }
+
+        let newAlive = 0
+        let newCrashed = 0
+        let newCompleted = 0
+
+        this.rockets.forEach((rocket) => {
+            switch (rocket.state) {
+                case 'alive':
+                    newAlive++
+                    break
+                case 'crashed':
+                    newCrashed++
+                    break
+                case 'completed':
+                    newCompleted++
+                    break
+            }
+        })
+
+        this.alive = newAlive
+        this.crashed = newCrashed
+        this.completed = newCompleted
     }
 
     reset() {
-        for (let i = 0; i < this.size; i++) {
-            this.rockets[i].delete()
-        }
-
+        this.rockets.forEach((rocket) => rocket.delete())
         this.size = populationSize.get()
         this.avgFitness = 0
         this.matingPool = []
@@ -90,12 +115,11 @@ export class RocketPopulation {
     }
 
     getSelectionPressure() {
-        // Example strategy: linearly increase factor over generations
         const INITIAL = 50
         const FINAL = 200
         const MAX_GEN = 100
 
-        return INITIAL + (FINAL - INITIAL) * Math.min(generation.get() / MAX_GEN, 1)
+        return INITIAL + (FINAL - INITIAL) * Math.min(this.generation / MAX_GEN, 1)
     }
 
     selection() {
@@ -125,13 +149,21 @@ export class RocketPopulation {
         }
     }
 
-    chooseBest(): Rocket[] {
+    private chooseBest(): Rocket[] {
         // TODO: Implement PriorityQueue approach
         const MINIMUM_PICKED = 1
         const AMOUNT_PICKED = Math.max(MINIMUM_PICKED, Math.floor(this.size * this.pickRate))
-        const SORTED_ROCKETS = this.rockets.slice().sort((a, b) => b.fitness - a.fitness)
-        const BEST_ROCKETS = SORTED_ROCKETS.slice(0, AMOUNT_PICKED)
+        return this.rockets
+            .slice()
+            .sort((a, b) => b.fitness - a.fitness)
+            .slice(0, AMOUNT_PICKED)
+    }
 
-        return BEST_ROCKETS
+    checkIfGenerationFinished(): boolean {
+        return (
+            this.lifecycle === lifespan.get() ||
+            this.alive === 0 ||
+            this.crashed + this.completed === populationSize.get()
+        )
     }
 }

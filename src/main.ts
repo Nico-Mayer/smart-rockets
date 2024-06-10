@@ -1,24 +1,17 @@
-import { Graphics, Point, Rectangle, Ticker } from 'pixi.js'
+import { Graphics, Rectangle, Ticker } from 'pixi.js'
 import 'pixi.js/math-extras'
 import { APP, getStage } from './app'
 
 import { ControlsUI } from './classes/controlsUi'
-import { Obstacle } from './classes/obstacle'
 import { QuadTree } from './classes/quadTree'
 import { StatsIsland } from './classes/statsIsland'
 import {
     CAN_HEIGHT,
     CAN_WIDTH,
-    OBSTACLES,
+    OBSTACLE_STORE,
     POPULATION,
-    alive,
-    completed,
-    crashed,
-    lifecycle,
-    lifespan,
     mode,
     nextGeneration,
-    populationSize,
     restartSimulation,
     showQuadTree,
     updateMutationRate,
@@ -50,12 +43,6 @@ let prevMode = 'sim'
     let elapsedUpdate = 0.0
     let lastUpdate = performance.now()
 
-    // Add obstacles
-    const OBS_1 = new Obstacle(new Point(1000, 400), 1500, 50)
-    //const OBS_2 = new Obstacle(new Point(CAN_WIDTH, 800), 3500, 100)
-    OBSTACLES.push(OBS_1)
-    //OBSTACLES.push(OBS_2)
-
     APP.ticker.add((ticker) => {
         const CURR_TIME = performance.now()
         const DELTA_TIME_UPDATE = CURR_TIME - lastUpdate
@@ -71,10 +58,8 @@ let prevMode = 'sim'
 
     function handleUpdate(ticker: Ticker) {
         STATS_ISLAND.update(ticker)
-        const END =
-            lifecycle.get() === lifespan.get() ||
-            alive.get() === 0 ||
-            crashed.get() + completed.get() === populationSize.get()
+
+        const GEN_FINISHED = POPULATION.checkIfGenerationFinished()
 
         let qt: QuadTree | null = null
         if (showQuadTree.get()) {
@@ -96,7 +81,7 @@ let prevMode = 'sim'
                     QUAD_TREE_VISUALIZER.clear()
                 }
 
-                if (END) {
+                if (GEN_FINISHED) {
                     POPULATION.evaluate()
                     POPULATION.selection()
                     updateMutationRate()
@@ -104,11 +89,13 @@ let prevMode = 'sim'
                 }
 
                 POPULATION.update()
-                lifecycle.increment()
                 prevMode = 'sim'
                 break
             case 'edit':
                 prevMode = 'edit'
+                OBSTACLE_STORE.obstacles.forEach((obstacle) => {
+                    obstacle.update()
+                })
                 break
             case 'stop':
                 if (prevMode !== 'stop') {

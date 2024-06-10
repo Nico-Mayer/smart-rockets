@@ -1,17 +1,5 @@
 import { Ticker } from 'pixi.js'
-import {
-    POPULATION,
-    alive,
-    completed,
-    crashed,
-    finished,
-    generation,
-    lifecycle,
-    lifespan,
-    mode,
-    mutationRate,
-    populationSize,
-} from '../globals'
+import { POPULATION, finished, lifespan, mode, mutationRate, populationSize } from '../globals'
 
 export class StatsIsland {
     private statsIsland: HTMLElement | null
@@ -86,7 +74,7 @@ export class StatsIsland {
     }
 
     private updateGeneration() {
-        if (this.generationSpan) this.generationSpan.innerHTML = `${generation.get()}`
+        if (this.generationSpan) this.generationSpan.innerHTML = `${POPULATION.generation}`
     }
 
     private updateSize() {
@@ -94,21 +82,21 @@ export class StatsIsland {
     }
 
     private updateLifecycle() {
-        const PADDED_LIFECYCLE = lifecycle.get().toString().padStart(3, '0')
+        const PADDED_LIFECYCLE = POPULATION.lifecycle.toString().padStart(3, '0')
         if (this.lifecycleSpan)
             this.lifecycleSpan.innerHTML = `${PADDED_LIFECYCLE} / ${lifespan.get()}`
     }
 
     private updateAlive() {
-        if (this.aliveSpan) this.aliveSpan.innerHTML = `${alive.get()}`
+        if (this.aliveSpan) this.aliveSpan.innerHTML = `${POPULATION.alive}`
     }
 
     private updateCrashed() {
-        if (this.crashedSpan) this.crashedSpan.innerHTML = `${crashed.get()}`
+        if (this.crashedSpan) this.crashedSpan.innerHTML = `${POPULATION.crashed}`
     }
 
     private updateCompleted() {
-        if (this.completedSpan) this.completedSpan.innerHTML = `${completed.get()}`
+        if (this.completedSpan) this.completedSpan.innerHTML = `${POPULATION.completed}`
     }
 
     private updateAvgFitness() {
