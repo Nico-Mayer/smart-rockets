@@ -11,18 +11,24 @@
 	<link rel="stylesheet" href="./src/styles.css">
 
 	<title>Smart Rockets</title>
+
 </head>
 
 <body class="light-mode">
 	<!-- <div class="hero-grid"></div> -->
 
-	<input type="checkbox" id="dropdown-checkbox">
-	<div id="dropdown" class="hide">
+	<div id="menu-btn">
+		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+			<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+				d="M4 6h16M4 12h16M4 18h12" />
+		</svg>
+		<input type="checkbox" id="dropdown-checkbox">
+	</div>
 
+	<div id="dropdown" class="hide">
 		<div>
 			<label for="game-mode-radio-group" class="setting-label">Mode</label>
 			<div class="radio-group" id="game-mode-radio-group">
-
 				<div class="radio-group-choice active" title="Start simulation">
 					<input id="play-btn" name="game-mode" type="radio" aria-label="Start simulation" checked
 						value="sim">
@@ -42,7 +48,6 @@
 				</div>
 				<div class="radio-group-choice" title="Edit mode">
 					<input id="edit-btn" name="game-mode" type="radio" aria-label="Edit mode" value="edit">
-
 					<svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
 						viewBox="0 0 24 24">
 						<path
@@ -54,23 +59,60 @@
 
 
 		<div>
-			<label for="toggle-controls" class="setting-label">Rendering Options</label>
+			<label for="toggle-controls" class="setting-label">Render Options</label>
 			<div class="toggle-controls">
 				<div class="checkbox-wrapper">
 					<input class="switch" type="checkbox" id="dist-checkbox">
-					<label for="dist-checkbox">Show Dist</label>
+					<label for="dist-checkbox">
+						Show Dist
+						<div class="impact-low info-i tooltip-container">
+							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
+							</svg>
+							<div class="tooltip-text">This has a <strong>minimal</strong> impact on FPS.</div>
+						</div>
+					</label>
+
 				</div>
 				<div class="checkbox-wrapper">
 					<input class="switch" type="checkbox" id="trail-checkbox">
-					<label for="trail-checkbox">Show Trail</label>
+					<label for="trail-checkbox">
+						Show Trail
+						<div class="impact-medium info-i tooltip-container">
+							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
+							</svg>
+							<div class="tooltip-text">This has a <strong>medium</strong> impact on FPS.</div>
+						</div>
+					</label>
 				</div>
 				<div class="checkbox-wrapper">
 					<input class="switch" type="checkbox" id="target-line-checkbox">
-					<label for="target-line-checkbox">Show Target Line</label>
+					<label for="target-line-checkbox">
+						Show Target Line
+						<div class="impact-high info-i tooltip-container">
+							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
+							</svg>
+							<div class="tooltip-text">This has a <strong>high</strong> impact on FPS.</div>
+						</div>
+					</label>
 				</div>
 				<div class="checkbox-wrapper">
 					<input class="switch" type="checkbox" id="qt-checkbox">
-					<label class="switch" for="qt-checkbox">Show Quad Tree</label>
+					<label class="switch" for="qt-checkbox">
+						Show Quad Tree
+						<div class="impact-high info-i tooltip-container">
+							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
+							</svg>
+							<div class="tooltip-text">This has a <strong>very high</strong> impact on FPS.</div>
+						</div>
+					</label>
 				</div>
 				<div class="checkbox-wrapper">
 					<input class="switch" type="checkbox" id="dark-mode-checkbox">
@@ -83,7 +125,16 @@
 			<label for="toggle-controls" class="setting-label">Population Options</label>
 			<label class="number-input" for="population-size-input">
 				<span>
-					Population Size
+					Size
+					<div class="impact-high info-i tooltip-container">
+						<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+							<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
+						</svg>
+						<div class="tooltip-text">A large population size can <strong>significantly</strong> impact the
+							FPS.
+						</div>
+					</div>
 				</span>
 				<select id="population-size-input" class="dropdown-select" aria-label="Population Size">
 					<option value="100">100</option>

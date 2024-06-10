@@ -278,6 +278,7 @@ export class Rocket extends Sprite {
         getStage().addChild(DIST_TEXT)
         DIST_TEXT.alpha = 0.7
         DIST_TEXT.zIndex = 0
+        DIST_TEXT.position.set(this.position.x, this.position.y)
         DIST_TEXT.tint = this.dna.bodyColor
         return DIST_TEXT
     }
