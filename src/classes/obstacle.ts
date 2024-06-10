@@ -2,8 +2,8 @@ import { Point, Sprite, Texture } from 'pixi.js'
 import { getStage } from '../app'
 import { OBSTACLE_STORE, darkMode, mode } from '../globals'
 
-const COLOR_DARK_MODE = 0x868686
-const COLOR_LIGHT_MODE = 0x787878
+const COLOR_DARK_MODE = 0xd3d3d3
+const COLOR_LIGHT_MODE = 0xd3d3d3
 
 export interface ObstacleData {
     id: string

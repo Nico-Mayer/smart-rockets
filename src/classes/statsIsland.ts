@@ -127,8 +127,6 @@ export class StatsIsland {
             offsetY = event.clientY - RECT.top
             isDragging = true
 
-            document.body.classList.add('no-select')
-
             // Add the listeners for mousemove and mouseup
             document.addEventListener('mousemove', MOUSE_MOVE_HANDLER)
             document.addEventListener('mouseup', MOUSE_UP_HANDLER)
@@ -166,13 +164,13 @@ export class StatsIsland {
         const MOUSE_UP_HANDLER = () => {
             isDragging = false
 
-            document.body.classList.remove('no-select')
-
             // Remove the listeners for mousemove and mouseup
             document.removeEventListener('mousemove', MOUSE_MOVE_HANDLER)
             document.removeEventListener('mouseup', MOUSE_UP_HANDLER)
         }
 
-        this.statsIsland.addEventListener('mousedown', MOUSE_DOWN_HANDLER)
+        const TITLE_BAR = this.statsIsland.querySelector('.collapse-title ') as HTMLElement
+
+        TITLE_BAR?.addEventListener('mousedown', MOUSE_DOWN_HANDLER)
     }
 }

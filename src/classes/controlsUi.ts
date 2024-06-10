@@ -1,10 +1,8 @@
 import {
-    GameMode,
     POPULATION,
     darkMode,
     mode,
     populationSize,
-    settingsOpen,
     showDistance,
     showQuadTree,
     showTargetLine,
@@ -12,34 +10,30 @@ import {
 } from '../globals'
 
 export class ControlsUI {
-    dropDownCheckbox: HTMLInputElement | null = null
-    dropdown: HTMLElement | null = null
-
-    gameModeRadioGroup: HTMLDivElement | null = null
+    playPauseButton: HTMLButtonElement | null = null
+    editButton: HTMLButtonElement | null = null
 
     distCheckbox: HTMLInputElement | null = null
     trailCheckbox: HTMLInputElement | null = null
     targetLineCheckbox: HTMLInputElement | null = null
     qtCheckbox: HTMLInputElement | null = null
     darkModeCheckbox: HTMLInputElement | null = null
-
     populationSizeInput: HTMLSelectElement | null = null
 
     constructor() {
-        this.dropDownCheckbox = document.querySelector('#dropdown-checkbox')
-        this.gameModeRadioGroup = document.querySelector('#game-mode-radio-group')
-        this.dropdown = document.querySelector('#dropdown')
+        this.playPauseButton = document.querySelector('#play-pause-button')
+        this.editButton = document.querySelector('#edit-button')
         this.distCheckbox = document.querySelector('#dist-checkbox')
         this.trailCheckbox = document.querySelector('#trail-checkbox')
         this.targetLineCheckbox = document.querySelector('#target-line-checkbox')
         this.qtCheckbox = document.querySelector('#qt-checkbox')
-        this.darkModeCheckbox = document.querySelector('#dark-mode-checkbox')
         this.populationSizeInput = document.querySelector('#population-size-input')
+        this.darkModeCheckbox = document.querySelector('#dark-mode-checkbox')
     }
 
     init() {
-        this.setupDropdownCheckbox()
-        this.setupGameModeRadioGroup()
+        this.setupPlayPauseButton()
+        this.setupEditButton()
         this.setupDistCheckbox()
         this.setupTrailCheckbox()
         this.setupTargetLineCheckbox()
@@ -48,45 +42,42 @@ export class ControlsUI {
         this.setupPopulationSizeInput()
     }
 
-    setupDropdownCheckbox() {
-        if (!this.dropDownCheckbox) return
-        this.dropDownCheckbox.checked = settingsOpen.get()
+    setupPlayPauseButton() {
+        if (!this.playPauseButton) return
+        const ICONS = this.playPauseButton.querySelectorAll('.btn-icon')
+        const PLAY_ICON = ICONS[0]
+        const PAUSE_ICON = ICONS[1]
 
-        if (settingsOpen.get()) {
-            this.dropdown?.classList.add('show')
-            this.dropdown?.classList.remove('hide')
-        } else {
-            this.dropdown?.classList.add('hide')
-            this.dropdown?.classList.remove('show')
-        }
+        this.playPauseButton.addEventListener('click', () => {
+            mode.emit('sim')
+        })
 
-        this.dropDownCheckbox?.addEventListener('change', this.toggleDropdown)
+        mode.addListener((gameMode) => {
+            if (gameMode === 'sim') {
+                PLAY_ICON.classList.add('hidden')
+                PAUSE_ICON.classList.remove('hidden')
+                this.playPauseButton?.classList.add('btn-primary')
+            } else {
+                PLAY_ICON.classList.remove('hidden')
+                PAUSE_ICON.classList.add('hidden')
+                this.playPauseButton?.classList.remove('btn-primary')
+            }
+        })
     }
 
-    setupGameModeRadioGroup() {
-        if (!this.gameModeRadioGroup) return
+    setupEditButton() {
+        if (!this.editButton) return
 
-        const BUTTONS = this.gameModeRadioGroup.querySelectorAll(
-            'input[type="radio"]'
-        ) as NodeListOf<HTMLInputElement>
+        this.editButton.addEventListener('click', () => {
+            mode.emit('edit')
+        })
 
-        const SET_MODE = (btnElement: HTMLInputElement) => {
-            const PARENT = btnElement.parentElement as HTMLDivElement
-            if (btnElement.checked) {
-                PARENT?.classList.add('active')
-                mode.emit(btnElement.value as GameMode)
-                BUTTONS.forEach((button) => {
-                    if (button !== btnElement) {
-                        button.parentElement?.classList.remove('active')
-                    }
-                })
+        mode.addListener((gameMode) => {
+            if (gameMode === 'edit') {
+                this.editButton?.classList.add('btn-primary')
             } else {
-                PARENT?.classList.remove('active')
+                this.editButton?.classList.remove('btn-primary')
             }
-        }
-
-        BUTTONS.forEach((element) => {
-            element?.addEventListener('change', () => SET_MODE(element))
         })
     }
 
@@ -137,18 +128,6 @@ export class ControlsUI {
             populationSize.set(parseInt(this.populationSizeInput!.value))
             POPULATION.changePopulationSize(populationSize.get())
         })
-    }
-
-    toggleDropdown = () => {
-        if (this.dropDownCheckbox?.checked) {
-            this.dropdown?.classList.add('show')
-            this.dropdown?.classList.remove('hide')
-            settingsOpen.set(true)
-        } else {
-            this.dropdown?.classList.add('hide')
-            this.dropdown?.classList.remove('show')
-            settingsOpen.set(false)
-        }
     }
 
     toggleShowDist = () => {

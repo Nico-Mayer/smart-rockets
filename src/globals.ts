@@ -106,8 +106,6 @@ function checkIfDarkMode() {
     }
 }
 
-export const settingsOpen: MutableValue<boolean> = new PersistentMutableValue('settingsOpen', false)
-
 export const CAN_WIDTH = window.innerWidth
 export const CAN_HEIGHT = window.innerHeight
 export const SPAWN_POS = new Point(CAN_WIDTH / 2, CAN_HEIGHT - 20)

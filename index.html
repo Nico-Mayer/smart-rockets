@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
 	<meta charset="UTF-8" />
@@ -8,170 +8,124 @@
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="./src/styles.css">
+	<link rel="stylesheet" href="./src/app.css">
 
 	<title>Smart Rockets</title>
 
 </head>
 
-<body class="light-mode">
+<body>
 	<!-- <div class="hero-grid"></div> -->
-
-	<div id="menu-btn">
-		<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-			<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-				d="M4 6h16M4 12h16M4 18h12" />
-		</svg>
-		<input type="checkbox" id="dropdown-checkbox">
-	</div>
-
-	<div id="dropdown" class="hide">
-		<div>
-			<label for="game-mode-radio-group" class="setting-label">Mode</label>
-			<div class="radio-group" id="game-mode-radio-group">
-				<div class="radio-group-choice active" title="Start simulation">
-					<input id="play-btn" name="game-mode" type="radio" aria-label="Start simulation" checked
-						value="sim">
-
-					<svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-						viewBox="0 0 24 24">
-						<path d="M6 4v16a1 1 0 0 0 1.524.852l13-8a1 1 0 0 0 0-1.704l-13-8A1 1 0 0 0 6 4" />
-					</svg>
-
-				</div>
-				<div class="radio-group-choice" title="Stop simulation">
-					<input id="stop-btn" name="game-mode" type="radio" aria-label="Stop simulation" value="stop">
-					<svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-						viewBox="0 0 24 24">
-						<path d="M17 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3" />
-					</svg>
-				</div>
-				<div class="radio-group-choice" title="Edit mode">
-					<input id="edit-btn" name="game-mode" type="radio" aria-label="Edit mode" value="edit">
-					<svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-						viewBox="0 0 24 24">
-						<path
-							d="M4 21q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z" />
-					</svg>
-				</div>
-			</div>
-		</div>
+	<details class="dropdown absolute top-5 left-5 " open>
+		<summary class="btn btn-square mb-5" id="dropdown-btn">
+			<svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
+				<path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+			</svg>
+		</summary>
 
 
-		<div>
-			<label for="toggle-controls" class="setting-label">Render Options</label>
-			<div class="toggle-controls">
-				<div class="checkbox-wrapper">
-					<input class="switch" type="checkbox" id="dist-checkbox">
-					<label for="dist-checkbox">
-						Show Dist
-						<div class="impact-low info-i tooltip-container">
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
-							</svg>
-							<div class="tooltip-text">This has a <strong>minimal</strong> impact on FPS.</div>
-						</div>
-					</label>
-
-				</div>
-				<div class="checkbox-wrapper">
-					<input class="switch" type="checkbox" id="trail-checkbox">
-					<label for="trail-checkbox">
-						Show Trail
-						<div class="impact-medium info-i tooltip-container">
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
-							</svg>
-							<div class="tooltip-text">This has a <strong>medium</strong> impact on FPS.</div>
-						</div>
-					</label>
-				</div>
-				<div class="checkbox-wrapper">
-					<input class="switch" type="checkbox" id="target-line-checkbox">
-					<label for="target-line-checkbox">
-						Show Target Line
-						<div class="impact-high info-i tooltip-container">
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
-							</svg>
-							<div class="tooltip-text">This has a <strong>high</strong> impact on FPS.</div>
-						</div>
-					</label>
-				</div>
-				<div class="checkbox-wrapper">
-					<input class="switch" type="checkbox" id="qt-checkbox">
-					<label class="switch" for="qt-checkbox">
-						Show Quad Tree
-						<div class="impact-high info-i tooltip-container">
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-								<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-									d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
-							</svg>
-							<div class="tooltip-text">This has a <strong>very high</strong> impact on FPS.</div>
-						</div>
-					</label>
-				</div>
-				<div class="checkbox-wrapper">
-					<input class="switch" type="checkbox" id="dark-mode-checkbox">
-					<label class="switch" for="dark-mode-checkbox">DarkMode</label>
-				</div>
-			</div>
-		</div>
-
-		<div>
-			<label for="toggle-controls" class="setting-label">Population Options</label>
-			<label class="number-input" for="population-size-input">
-				<span>
-					Population Size
-					<div class="impact-high info-i tooltip-container">
-						<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-							<path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-								d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0-18 0m9-4v4m0 4h.01" />
-						</svg>
-						<div class="tooltip-text">A large population size can <strong>significantly</strong> impact the
-							FPS.
-						</div>
+		<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64">
+			<li>
+				<h2 class="menu-title flex items-center gap-4 px-1.5">
+					<div class="i-[tabler--device-gamepad-2] menu-icon"></div>
+					<span>General</span>
+				</h2>
+				<ul class="flex">
+					<div class="join">
+						<button class="join-item btn btn-square btn-primary" id="play-pause-button">
+							<div class="i-[tabler--play] btn-icon hidden"></div>
+							<div class="i-[tabler--pause]  btn-icon"></div>
+						</button>
+						<button class="join-item btn btn-square" id="edit-button">
+							<div class="i-[tabler--pencil] btn-icon"></div>
+						</button>
 					</div>
-				</span>
-				<select id="population-size-input" class="dropdown-select" aria-label="Population Size">
-					<option value="100">100</option>
-					<option value="350">350</option>
-					<option value="500">500</option>
-					<option value="700">700</option>
-					<option value="1200">1200</option>
-					<option value="1600">1600</option>
-					<option value="2500">2500</option>
-				</select>
-			</label>
-			<label class="number-input" for="lifespan-input">
-				<span>Lifespan (Time to live)</span>
-				<input type="number" id="lifespan-input" value="350" step="1" min="1" max="5000" disabled>
-			</label>
-		</div>
+					<div class="divider divider-horizontal"></div>
+					<button class="join-item btn btn-square">
+						<div class="i-[tabler--repeat]"></div>
+					</button>
+				</ul>
 
+				<h2 class="menu-title flex items-center gap-4 px-1.5">
+					<div class="i-[tabler--heart-rate-monitor] menu-icon"></div>
+					<span>Render Options</span>
+				</h2>
+				<ul>
+					<div class="form-control w-52">
+						<label class="cursor-pointer label">
+							<span class="label-text">Show Dist</span>
+							<input type="checkbox" class="toggle toggle-success" id="dist-checkbox" />
+						</label>
+					</div>
+					<div class="form-control w-52">
+						<label class="cursor-pointer label">
+							<span class="label-text">Show Trail</span>
+							<input type="checkbox" class="toggle toggle-success" id="trail-checkbox" />
+						</label>
+					</div>
+					<div class="form-control w-52">
+						<label class="cursor-pointer label">
+							<span class="label-text">Show Target Line</span>
+							<input type="checkbox" class="toggle toggle-success" id="target-line-checkbox" />
+						</label>
+					</div>
+					<div class="form-control w-52">
+						<label class="cursor-pointer label">
+							<span class="label-text">Show Quad Tree</span>
+							<input type="checkbox" class="toggle toggle-success" id="qt-checkbox" />
+						</label>
+					</div>
+				</ul>
+
+
+				<h2 class="menu-title flex items-center gap-4 px-1.5">
+					<div class="i-[tabler--select-all] menu-icon"></div>
+					<span>Population Options</span>
+				</h2>
+				<ul>
+					<label class="form-control w-52 max-w-xs">
+						<span class="label label-text text-xs">Population Size</span>
+						<select class="select select-sm select-bordered" id="population-size-input">
+							<option value="100">100</option>
+							<option value="350">350</option>
+							<option value="500">500</option>
+							<option value="700">700</option>
+							<option value="1200">1200</option>
+							<option value="1600">1600</option>
+							<option value="2500">2500</option>
+						</select>
+					</label>
+				</ul>
+			</li>
+		</ul>
+	</details>
+
+	<div class="collapse collapse-arrow shadow bg-base-100 rounded-box absolute top-10 right-10 w-80" id="stats-island">
+		<input type="checkbox" class="w-12 ml-auto cursor-pointer" checked />
+		<div class="collapse-title text-md font-medium !cursor-grab">
+			Stats
+		</div>
+		<div class="collapse-content">
+			<ul>
+				<h4>General</h4>
+				<li>FPS: <span class="badge" id="fps-span">100</span> </li>
+				<li>Mode: <span id="mode-span">sim</span> </li>
+				<li>Cleared: <span id="cleared-span">false</span> </li>
+				<h4>Population</h4>
+				<li>Generation: <span id="generation-span">0</span></li>
+				<li>Size: <span id="size-span">100</span></li>
+				<li>Lifecycle: <span id="lifecycle-span">0 / 800</span></li>
+				<li>Alive: <span id="alive-span">0</span></li>
+				<li>Crashed: <span id="crashed-span">0</span></li>
+				<li>Completed: <span id="completed-span">0</span></li>
+				<li>Avg fitness: <span id="avg-fitness-span">0</span></li>
+				<li>Selection Pressure: <span id="selection-pressure-span">0</span></li>
+				<h4>DNA</h4>
+				<li>Mutation Rate: <span id="mutation-rate-span">0</span></li>
+			</ul>
+		</div>
 	</div>
 
-	<ul id="stats-island">
-		<h3>Stats for nerds</h3>
-		<h4>General</h4>
-		<li>FPS: <span id="fps-span">100</span> </li>
-		<li>Mode: <span id="mode-span">sim</span> </li>
-		<li>Cleared: <span id="cleared-span">false</span> </li>
-		<h4>Population</h4>
-		<li>Generation: <span id="generation-span">0</span></li>
-		<li>Size: <span id="size-span">100</span></li>
-		<li>Lifecycle: <span id="lifecycle-span">0 / 800</span></li>
-		<li>Alive: <span id="alive-span">0</span></li>
-		<li>Crashed: <span id="crashed-span">0</span></li>
-		<li>Completed: <span id="completed-span">0</span></li>
-		<li>Avg fitness: <span id="avg-fitness-span">0</span></li>
-		<li>Selection Pressure: <span id="selection-pressure-span">0</span></li>
-		<h4>DNA</h4>
-		<li>Mutation Rate: <span id="mutation-rate-span">0</span></li>
-	</ul>
 
 	<script type="module" src="/src/main.ts"></script>
 </body>
