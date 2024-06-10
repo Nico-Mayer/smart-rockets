@@ -19,41 +19,48 @@ export class QuadTree {
         this.capacity = capacity
     }
 
-    insert(point: Point) {
-        if (!this.boundary.contains(point.x, point.y)) return
+    insert(point: Point): boolean {
+        if (!this.boundary.contains(point.x, point.y)) return false
 
         if (this.points.length < this.capacity && !this.divided) {
             this.points.push(point)
+            return true
         } else {
             if (!this.divided) {
                 this.subdivide()
             }
-            const POINTS = [...this.points, point]
-
-            POINTS.forEach((point) => {
-                this.topLeft?.insert(point)
-                this.topRight?.insert(point)
-                this.bottomLeft?.insert(point)
-                this.bottomRight?.insert(point)
-            })
-            this.points = []
+            if (this.topLeft?.insert(point)) return true
+            if (this.topRight?.insert(point)) return true
+            if (this.bottomLeft?.insert(point)) return true
+            if (this.bottomRight?.insert(point)) return true
         }
+        return false
     }
 
     subdivide() {
         const { x: X, y: Y, width: WIDTH, height: HEIGHT } = this.boundary
+        const HALF_WIDTH = WIDTH / 2
+        const HALF_HEIGHT = HEIGHT / 2
 
-        const TL = new Rectangle(X, Y, WIDTH / 2, HEIGHT / 2)
-        const TR = new Rectangle(X + WIDTH / 2, Y, WIDTH / 2, HEIGHT / 2)
-        const BL = new Rectangle(X, Y + HEIGHT / 2, WIDTH / 2, HEIGHT / 2)
-        const BR = new Rectangle(X + WIDTH / 2, Y + HEIGHT / 2, WIDTH / 2, HEIGHT / 2)
+        const TL_BOUNDRAY = new Rectangle(X, Y, HALF_WIDTH, HALF_HEIGHT)
+        const TR_BOUNDRAY = new Rectangle(X + HALF_WIDTH, Y, HALF_WIDTH, HALF_HEIGHT)
+        const BL_BOUNDRAY = new Rectangle(X, Y + HALF_HEIGHT, HALF_WIDTH, HALF_HEIGHT)
+        const BR_BOUNDRAY = new Rectangle(X + HALF_WIDTH, Y + HALF_HEIGHT, HALF_WIDTH, HALF_HEIGHT)
 
-        this.topLeft = new QuadTree(TL, this.capacity)
-        this.topRight = new QuadTree(TR, this.capacity)
-        this.bottomLeft = new QuadTree(BL, this.capacity)
-        this.bottomRight = new QuadTree(BR, this.capacity)
+        this.topLeft = new QuadTree(TL_BOUNDRAY, this.capacity)
+        this.topRight = new QuadTree(TR_BOUNDRAY, this.capacity)
+        this.bottomLeft = new QuadTree(BL_BOUNDRAY, this.capacity)
+        this.bottomRight = new QuadTree(BR_BOUNDRAY, this.capacity)
 
         this.divided = true
+
+        for (const POINT of this.points) {
+            this.topLeft.insert(POINT) ||
+                this.topRight.insert(POINT) ||
+                this.bottomLeft.insert(POINT) ||
+                this.bottomRight.insert(POINT)
+        }
+        this.points = []
     }
 
     show(graphics: Graphics) {
