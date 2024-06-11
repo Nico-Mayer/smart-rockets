@@ -1,12 +1,12 @@
 import {
-	POPULATION,
-	darkMode,
-	mode,
-	populationSize,
-	showDistance,
-	showQuadTree,
-	showTargetLine,
-	showTrail,
+    POPULATION,
+    darkMode,
+    mode,
+    populationSize,
+    showDistance,
+    showQuadTree,
+    showTargetLine,
+    showTrail,
 } from '../globals'
 
 export class ControlsUI {
@@ -49,11 +49,11 @@ export class ControlsUI {
         const PAUSE_ICON = ICONS[1]
 
         this.playPauseButton.addEventListener('click', () => {
-			if (mode.value === 'sim') {
-				mode.emit('pause')
-			}else{
-				mode.emit('sim')
-			}
+            if (mode.value === 'sim') {
+                mode.value = 'pause'
+            } else {
+                mode.value = 'sim'
+            }
         })
 
         mode.addListener((gameMode) => {
@@ -61,7 +61,7 @@ export class ControlsUI {
                 PLAY_ICON.classList.add('hidden')
                 PAUSE_ICON.classList.remove('hidden')
                 this.playPauseButton?.classList.add('btn-active')
-            } else if (gameMode === 'pause' || gameMode === 'edit'){
+            } else if (gameMode === 'pause' || gameMode === 'edit') {
                 PLAY_ICON.classList.remove('hidden')
                 PAUSE_ICON.classList.add('hidden')
                 this.playPauseButton?.classList.remove('btn-active')
@@ -73,7 +73,7 @@ export class ControlsUI {
         if (!this.editButton) return
 
         this.editButton.addEventListener('click', () => {
-            mode.emit('edit')
+            mode.value = 'edit'
         })
 
         mode.addListener((gameMode) => {
@@ -87,13 +87,13 @@ export class ControlsUI {
 
     setupDistCheckbox() {
         if (!this.distCheckbox) return
-        this.distCheckbox.checked = showDistance.get()
+        this.distCheckbox.checked = showDistance.value
         this.distCheckbox?.addEventListener('change', this.toggleShowDist)
     }
 
     setupTargetLineCheckbox() {
         if (!this.targetLineCheckbox) return
-        this.targetLineCheckbox.checked = showTargetLine.get()
+        this.targetLineCheckbox.checked = showTargetLine.value
         this.targetLineCheckbox?.addEventListener('change', this.toggleShowTargetLine)
     }
 
@@ -105,64 +105,49 @@ export class ControlsUI {
 
     setupQuadTreeCheckbox() {
         if (!this.qtCheckbox) return
-        this.qtCheckbox.checked = showQuadTree.get()
+        this.qtCheckbox.checked = showQuadTree.value
         this.qtCheckbox?.addEventListener('change', this.toggleShowQuadTree)
     }
 
     setupTrailCheckbox() {
         if (!this.trailCheckbox) return
-        this.trailCheckbox.checked = showTrail.get()
+        this.trailCheckbox.checked = showTrail.value
         this.trailCheckbox?.addEventListener('change', this.toggleShowTrail)
     }
 
     setupPopulationSizeInput() {
         if (!this.populationSizeInput) return
 
-        /* mode.addListener((gameMode) => {
-            if (gameMode === 'sim') {
-                this.populationSizeInput!.disabled = true
-            } else {
-                this.populationSizeInput!.disabled = false
-            }
-        }) */
-
-        this.populationSizeInput.value = populationSize.get().toString()
+        this.populationSizeInput.value = populationSize.value.toString()
 
         this.populationSizeInput.addEventListener('change', () => {
-            populationSize.set(parseInt(this.populationSizeInput!.value))
-            POPULATION.changePopulationSize(populationSize.get())
+            populationSize.value = parseInt(this.populationSizeInput!.value)
+            POPULATION.changePopulationSize(populationSize.value)
         })
     }
 
     toggleShowDist = () => {
         if (!this.distCheckbox) return
-        showDistance.set(this.distCheckbox.checked)
+        showDistance.value = this.distCheckbox.checked
     }
 
     toggleShowTrail = () => {
         if (!this.trailCheckbox) return
-        showTrail.set(this.trailCheckbox.checked)
+        showTrail.value = this.trailCheckbox.checked
     }
 
     toggleShowTargetLine = () => {
         if (!this.targetLineCheckbox) return
-        showTargetLine.set(this.targetLineCheckbox.checked)
+        showTargetLine.value = this.targetLineCheckbox.checked
     }
 
     toggleShowQuadTree = () => {
         if (!this.qtCheckbox) return
-        showQuadTree.set(this.qtCheckbox?.checked)
+        showQuadTree.value = this.qtCheckbox?.checked
     }
 
     toggleTheme = () => {
         if (!this.themeToggle) return
-
-        if (this.themeToggle.checked) {
-            darkMode.emit(true)
-            localStorage.setItem('darkMode', 'true')
-        } else {
-            darkMode.emit(false)
-            localStorage.setItem('darkMode', 'false')
-        }
+        darkMode.value = this.themeToggle.checked
     }
 }

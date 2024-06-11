@@ -1,25 +1,25 @@
 import { Assets, BitmapText, Graphics, MeshRope, Point, Sprite } from 'pixi.js'
 import {
-	APP,
-	CAN_HEIGHT,
-	CAN_WIDTH,
-	OBSTACLE_STORE,
-	ROCKET_TRAIL_LENGTH,
-	SPAWN_POS,
-	TARGET,
-	darkMode,
-	lifespan,
-	rocketCollided,
-	rocketCompleted,
-	showDistance,
-	showTargetLine,
-	showTrail,
+    APP,
+    CAN_HEIGHT,
+    CAN_WIDTH,
+    OBSTACLE_STORE,
+    POPULATION,
+    SPAWN_POS,
+    TARGET,
+    darkMode,
+    finished,
+    lifespan,
+    showDistance,
+    showTargetLine,
+    showTrail,
 } from '../../globals'
 import { computePathPoints, pointDistance } from '../utils'
 import { DNA } from './dna'
 
 const TRAIL_ASSET = await Assets.load('trail.png')
 const ROCKET_ASSET = await Assets.load('rocket.png')
+const ROCKET_TRAIL_LENGTH = 25
 
 const LINE_COLOR_BLOCKED = 0xfa5252
 const LINE_COLOR_CLEAR = 0x69db7c
@@ -81,7 +81,7 @@ export class Rocket extends Sprite {
         this.position = this.position.add(this.vel)
         this.acc.set(0, 0)
 
-        if (lifecycle < lifespan.get()) {
+        if (lifecycle < lifespan.value) {
             const FORCE = this.dna.genes[lifecycle]
             this.acc = this.acc.add(FORCE)
         }
@@ -176,7 +176,8 @@ export class Rocket extends Sprite {
             )
 
         if (COLLIDED) {
-            rocketCollided()
+            POPULATION.alive--
+            POPULATION.crashed++
             this.tint = COLOR_CRASHED
 
             this.colorChangeTimeoutID = setTimeout(async () => {
@@ -199,7 +200,10 @@ export class Rocket extends Sprite {
 
         if (TARGET_HIT) {
             this.state = 'completed'
-            rocketCompleted()
+            POPULATION.completed++
+            if (!finished.value) {
+                finished.value = true
+            }
         }
     }
 
@@ -251,13 +255,13 @@ export class Rocket extends Sprite {
     }
 
     private updateLineToTarget() {
-        const SHOULD_SHOW_LINE = showTargetLine.get() && this.state === 'alive'
+        const SHOULD_SHOW_LINE = showTargetLine.value && this.state === 'alive'
         const IS_ON_STAGE = this.lineToTarget.parent !== null
         const UPDATE_INTERVAL = 10
 
         if (SHOULD_SHOW_LINE) {
             if (!IS_ON_STAGE) {
-               APP.stage.addChild(this.lineToTarget)
+                APP.stage.addChild(this.lineToTarget)
             }
             this.lineToTarget.clear()
 
@@ -286,7 +290,7 @@ export class Rocket extends Sprite {
     }
 
     private updateDistText() {
-        const SHOULD_SHOW_TEXT = (showDistance.get() || this.dna.isBest) && this.state === 'alive'
+        const SHOULD_SHOW_TEXT = (showDistance.value || this.dna.isBest) && this.state === 'alive'
         const IS_ON_STAGE = this.distText.parent !== null
         const UPDATE_INTERVAL = 10
 
@@ -319,7 +323,7 @@ export class Rocket extends Sprite {
     }
 
     private updateTrail() {
-        const SHOULD_SHOW_TRAIL = showTrail.get()
+        const SHOULD_SHOW_TRAIL = showTrail.value
         const IS_ON_STAGE = this.trail.parent !== null
 
         if (SHOULD_SHOW_TRAIL) {

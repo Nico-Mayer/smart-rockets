@@ -6,8 +6,8 @@ import { Rocket } from './rocket'
 export class RocketPopulation {
     generation: number = 0
     lifecycle: number = 0
-    size: number = populationSize.get()
-    alive: number = populationSize.get()
+    size: number
+    alive: number
     crashed: number = 0
     completed: number = 0
     rockets: Rocket[] = []
@@ -15,7 +15,9 @@ export class RocketPopulation {
     avgFitness: number = 0
     pickRate: number = 0.01
 
-    constructor() {
+    constructor(size: number) {
+        this.size = size
+        this.alive = size
         for (let i = 0; i < this.size; i++) {
             this.rockets[i] = new Rocket(new DNA([], randomColor(), randomColor()))
         }
@@ -26,6 +28,14 @@ export class RocketPopulation {
             this.rockets[i].update(this.lifecycle)
         }
         this.lifecycle++
+    }
+
+    nextGeneration() {
+        this.generation++
+        this.lifecycle = 0
+        this.alive = populationSize.value
+        this.crashed = 0
+        this.completed = 0
     }
 
     changePopulationSize(newSize: number) {
@@ -72,7 +82,7 @@ export class RocketPopulation {
 
     reset() {
         this.rockets.forEach((rocket) => rocket.delete())
-        this.size = populationSize.get()
+        this.size = populationSize.value
         this.avgFitness = 0
         this.matingPool = []
         this.rockets = []
@@ -161,9 +171,9 @@ export class RocketPopulation {
 
     checkIfGenerationFinished(): boolean {
         return (
-            this.lifecycle === lifespan.get() ||
+            this.lifecycle === lifespan.value ||
             this.alive === 0 ||
-            this.crashed + this.completed === populationSize.get()
+            this.crashed + this.completed === populationSize.value
         )
     }
 }

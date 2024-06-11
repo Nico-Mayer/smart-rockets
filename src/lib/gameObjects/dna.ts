@@ -18,7 +18,7 @@ export class DNA {
     }
 
     private generateGenes(): Point[] {
-        return Array.from({ length: lifespan.get() }, () => randomVector())
+        return Array.from({ length: lifespan.value }, () => randomVector())
     }
 
     crossover(partner: DNA): DNA {
@@ -30,7 +30,7 @@ export class DNA {
 
     mutation() {
         for (let i = 0; i < this.genes.length; i++) {
-            if (Math.random() < mutationRate.get()) {
+            if (Math.random() < mutationRate.value) {
                 this.genes[i] = randomVector()
             }
         }

@@ -1,23 +1,23 @@
 import { Graphics, Rectangle, Ticker } from 'pixi.js'
 import 'pixi.js/math-extras'
 import {
-	APP,
-	CAN_HEIGHT,
-	CAN_WIDTH,
-	OBSTACLE_STORE,
-	POPULATION,
-	mode,
-	nextGeneration,
-	showQuadTree,
-	updateMutationRate
+    APP,
+    CAN_HEIGHT,
+    CAN_WIDTH,
+    OBSTACLE_STORE,
+    POPULATION,
+    mode,
+    showQuadTree,
+    updateMutationRate,
 } from './globals'
 import { QuadTree } from './lib/dataStructs/quadTree'
 import { ControlsUI } from './ui/controlsUi'
 import { StatsIsland } from './ui/statsIsland'
 
+const STATS_ISLAND = new StatsIsland()
+const CONTROLS_UI = new ControlsUI()
 
-let prevMode = 'sim'
-
+let prevMode: string = 'sim'
 
 ;(async () => {
     // Initialize app
@@ -29,9 +29,7 @@ let prevMode = 'sim'
     })
     document.body.appendChild(APP.canvas)
 
-    // Initialize UI elements
-    const STATS_ISLAND = new StatsIsland()
-    const CONTROLS_UI = new ControlsUI()
+    // Initialize UI controls
     CONTROLS_UI.init()
 
     // Initialize QuadTree visualizer
@@ -62,7 +60,7 @@ let prevMode = 'sim'
         const GEN_FINISHED = POPULATION.checkIfGenerationFinished()
 
         let qt: QuadTree | null = null
-        if (showQuadTree.get()) {
+        if (showQuadTree.value) {
             qt = new QuadTree(new Rectangle(0, 0, CAN_WIDTH, CAN_HEIGHT), 1)
         }
 
@@ -74,7 +72,7 @@ let prevMode = 'sim'
                     })
 
                     QUAD_TREE_VISUALIZER.clear()
-                    if (showQuadTree.get()) {
+                    if (showQuadTree.value) {
                         qt.show(QUAD_TREE_VISUALIZER)
                     }
                 } else {
@@ -85,21 +83,23 @@ let prevMode = 'sim'
                     POPULATION.evaluate()
                     POPULATION.selection()
                     updateMutationRate()
-                    nextGeneration()
+                    POPULATION.nextGeneration()
                 }
 
                 POPULATION.update()
                 prevMode = 'sim'
                 break
             case 'edit':
-                prevMode = 'edit'
+                if (prevMode !== 'edit') {
+                    QUAD_TREE_VISUALIZER.clear()
+                }
+
                 OBSTACLE_STORE.obstacles.forEach((obstacle) => {
                     obstacle.update()
                 })
+                prevMode = 'edit'
                 break
             case 'pause':
-                console.log(prevMode)
-                prevMode = 'pause'
                 break
         }
     }

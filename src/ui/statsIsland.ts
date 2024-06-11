@@ -70,7 +70,7 @@ export class StatsIsland {
     }
 
     private updateCleared() {
-        if (this.clearedSpan) this.clearedSpan.innerHTML = `${finished.get()}`
+        if (this.clearedSpan) this.clearedSpan.innerHTML = `${finished.value}`
     }
 
     private updateGeneration() {
@@ -78,13 +78,13 @@ export class StatsIsland {
     }
 
     private updateSize() {
-        if (this.sizeSpan) this.sizeSpan.innerHTML = `${populationSize.get()}`
+        if (this.sizeSpan) this.sizeSpan.innerHTML = `${populationSize.value}`
     }
 
     private updateLifecycle() {
         const PADDED_LIFECYCLE = POPULATION.lifecycle.toString().padStart(3, '0')
         if (this.lifecycleSpan)
-            this.lifecycleSpan.innerHTML = `${PADDED_LIFECYCLE} / ${lifespan.get()}`
+            this.lifecycleSpan.innerHTML = `${PADDED_LIFECYCLE} / ${lifespan.value}`
     }
 
     private updateAlive() {
@@ -105,7 +105,7 @@ export class StatsIsland {
     }
 
     private updateMutationRate() {
-        const MUTATION_RATE = (mutationRate.get() * 100).toFixed(2)
+        const MUTATION_RATE = (mutationRate.value * 100).toFixed(2)
         if (this.mutationRateSpan) this.mutationRateSpan.innerHTML = `${MUTATION_RATE}%`
     }
 
