@@ -1,12 +1,12 @@
 import {
-    POPULATION,
-    darkMode,
-    mode,
-    populationSize,
-    showDistance,
-    showQuadTree,
-    showTargetLine,
-    showTrail,
+	POPULATION,
+	darkMode,
+	mode,
+	populationSize,
+	showDistance,
+	showQuadTree,
+	showTargetLine,
+	showTrail,
 } from '../globals'
 
 export class ControlsUI {
@@ -49,18 +49,22 @@ export class ControlsUI {
         const PAUSE_ICON = ICONS[1]
 
         this.playPauseButton.addEventListener('click', () => {
-            mode.emit('sim')
+			if (mode.value === 'sim') {
+				mode.emit('pause')
+			}else{
+				mode.emit('sim')
+			}
         })
 
         mode.addListener((gameMode) => {
             if (gameMode === 'sim') {
                 PLAY_ICON.classList.add('hidden')
                 PAUSE_ICON.classList.remove('hidden')
-                this.playPauseButton?.classList.add('btn-primary')
-            } else {
+                this.playPauseButton?.classList.add('btn-active')
+            } else if (gameMode === 'pause' || gameMode === 'edit'){
                 PLAY_ICON.classList.remove('hidden')
                 PAUSE_ICON.classList.add('hidden')
-                this.playPauseButton?.classList.remove('btn-primary')
+                this.playPauseButton?.classList.remove('btn-active')
             }
         })
     }
@@ -74,9 +78,9 @@ export class ControlsUI {
 
         mode.addListener((gameMode) => {
             if (gameMode === 'edit') {
-                this.editButton?.classList.add('btn-primary')
+                this.editButton?.classList.add('btn-active')
             } else {
-                this.editButton?.classList.remove('btn-primary')
+                this.editButton?.classList.remove('btn-active')
             }
         })
     }

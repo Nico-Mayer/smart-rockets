@@ -1,20 +1,19 @@
 import { Graphics, Rectangle, Ticker } from 'pixi.js'
 import 'pixi.js/math-extras'
-import { APP, getStage } from './app'
+import { APP } from './app'
 
 import { ControlsUI } from './classes/controlsUi'
 import { QuadTree } from './classes/quadTree'
 import { StatsIsland } from './classes/statsIsland'
 import {
-    CAN_HEIGHT,
-    CAN_WIDTH,
-    OBSTACLE_STORE,
-    POPULATION,
-    mode,
-    nextGeneration,
-    restartSimulation,
-    showQuadTree,
-    updateMutationRate,
+	CAN_HEIGHT,
+	CAN_WIDTH,
+	OBSTACLE_STORE,
+	POPULATION,
+	mode,
+	nextGeneration,
+	showQuadTree,
+	updateMutationRate
 } from './globals'
 
 let prevMode = 'sim'
@@ -97,13 +96,9 @@ let prevMode = 'sim'
                     obstacle.update()
                 })
                 break
-            case 'stop':
-                if (prevMode !== 'stop') {
-                    QUAD_TREE_VISUALIZER.clear()
-                    restartSimulation()
-                    getStage().removeAllListeners()
-                }
-                prevMode = 'stop'
+            case 'pause':
+                console.log(prevMode)
+                prevMode = 'pause'
                 break
         }
     }

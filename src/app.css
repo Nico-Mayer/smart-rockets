@@ -21,3 +21,8 @@ body {
 .data-badge {
     @apply badge font-mono badge-neutral;
 }
+
+.btn-icon{
+    width: 1rem;
+    height: 1rem;
+}

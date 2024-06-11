@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Obstacle, ObstacleData } from './classes/obstacle'
 import { RocketPopulation } from './classes/population'
 
-export type GameMode = 'sim' | 'edit' | 'stop'
+export type GameMode = 'sim' | 'edit' | 'pause'
 
 class MutableValue<T> {
     private _value: T
