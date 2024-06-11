@@ -1,6 +1,6 @@
 import { Point, Sprite, Texture } from 'pixi.js'
-import { getStage } from '../app'
-import { OBSTACLE_STORE, darkMode, mode } from '../globals'
+import { OBSTACLE_STORE, darkMode, mode } from '../../globals'
+import { APP } from '../../globals'
 
 const COLOR_DARK_MODE = 0xd3d3d3
 const COLOR_LIGHT_MODE = 0xd3d3d3
@@ -28,7 +28,7 @@ export class Obstacle extends Sprite {
         this.zIndex = 2
         this.position = new Point(data.x, data.y)
 
-        getStage().addChild(this)
+        APP.stage.addChild(this)
 
         this.eventMode = 'static'
         this.on('pointerdown', this.handelPointerDown)

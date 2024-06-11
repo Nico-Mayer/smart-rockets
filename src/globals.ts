@@ -1,96 +1,21 @@
 /* eslint-disable */
-import { Point } from 'pixi.js'
-import { v4 as uuidv4 } from 'uuid'
-import { Obstacle, ObstacleData } from './classes/obstacle'
-import { RocketPopulation } from './classes/population'
+import { Application, Point } from 'pixi.js'
 
-export type GameMode = 'sim' | 'edit' | 'pause'
+import { MutableValue, PersistentMutableValue } from './lib/dataStructs/mutableValue'
+import { ObstacleStore } from './lib/dataStructs/obstacleStore'
+import { Signal } from './lib/dataStructs/signal'
+import { Obstacle } from './lib/gameObjects/obstacle'
+import { RocketPopulation } from './lib/gameObjects/population'
 
-class MutableValue<T> {
-    private _value: T
-    constructor(value: T) {
-        this._value = value
-    }
-    get(): T {
-        return this._value
-    }
-    set(value: T): void {
-        this._value = value
-    }
-}
+export const APP = new Application()
 
-class PersistentMutableValue<T> extends MutableValue<T> {
-    key: string
-    constructor(key: string, defaultValue: T) {
-        super(localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)!) : defaultValue)
-        this.key = key
-    }
-    set(value: T): void {
-        super.set(value)
-        localStorage.setItem(this.key, JSON.stringify(value))
-    }
-}
 
-type Listener<T> = (data: T) => void
+type GameMode = 'sim' | 'edit' | 'pause'
 
-class Signal<T> {
-    private listeners: Listener<T>[] = []
-    value: T
 
-    constructor(value: T) {
-        this.value = value
-    }
 
-    addListener(listener: Listener<T>): void {
-        this.listeners.push(listener)
-    }
 
-    removeListener(listener: Listener<T>): void {
-        const index = this.listeners.indexOf(listener)
-        if (index !== -1) {
-            this.listeners.splice(index, 1)
-        }
-    }
 
-    emit(data: T): void {
-        this.listeners.forEach((listener) => listener(data))
-        this.value = data
-    }
-}
-
-const DEFAULT_OBS_DATA: ObstacleData[] = [{ id: uuidv4(), x: 500, y: 400, width: 500, height: 100 }]
-
-class ObstacleStore {
-    private _key: string = 'obstacleData'
-    private obstacleData: ObstacleData[] = []
-    obstacles: Obstacle[] = []
-
-    constructor() {
-        this.obstacleData = JSON.parse(localStorage.getItem(this._key)!) || []
-
-        if (this.obstacleData.length === 0) {
-            this.obstacleData = [...DEFAULT_OBS_DATA]
-            localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
-        }
-        this.obstacles = this.obstacleData.map((data) => {
-            return new Obstacle(data)
-        })
-    }
-
-    addObstacle(obstacle: Obstacle): void {
-        this.obstacles.push(obstacle)
-        this.obstacleData.push(obstacle.getData())
-        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
-    }
-
-    editObstacle(obstacle: ObstacleData): void {
-        const index = this.obstacleData.findIndex((obs) => obs.id === obstacle.id)
-        this.obstacleData[index] = obstacle
-
-        console.log(this.obstacleData)
-        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
-    }
-}
 
 export const darkMode: Signal<boolean> = new Signal(checkIfDarkMode())
 

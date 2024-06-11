@@ -1,11 +1,7 @@
 import { Graphics, Rectangle, Ticker } from 'pixi.js'
 import 'pixi.js/math-extras'
-import { APP } from './app'
-
-import { ControlsUI } from './classes/controlsUi'
-import { QuadTree } from './classes/quadTree'
-import { StatsIsland } from './classes/statsIsland'
 import {
+	APP,
 	CAN_HEIGHT,
 	CAN_WIDTH,
 	OBSTACLE_STORE,
@@ -15,8 +11,13 @@ import {
 	showQuadTree,
 	updateMutationRate
 } from './globals'
+import { QuadTree } from './lib/dataStructs/quadTree'
+import { ControlsUI } from './ui/controlsUi'
+import { StatsIsland } from './ui/statsIsland'
+
 
 let prevMode = 'sim'
+
 
 ;(async () => {
     // Initialize app

@@ -1,5 +1,5 @@
 import { Graphics, Point, Rectangle } from 'pixi.js'
-import { darkMode } from '../globals'
+import { darkMode } from '../../globals'
 
 const COLOR_LIGHT = 0xa5d8ff
 const COLOR_DARK = 0x154163

@@ -1,22 +1,25 @@
-import { BitmapText, Graphics, MeshRope, Point, Sprite } from 'pixi.js'
-import { ROCKET_ASSET, TRAIL_ASSET, getStage } from '../app'
+import { Assets, BitmapText, Graphics, MeshRope, Point, Sprite } from 'pixi.js'
 import {
-    CAN_HEIGHT,
-    CAN_WIDTH,
-    OBSTACLE_STORE,
-    ROCKET_TRAIL_LENGTH,
-    SPAWN_POS,
-    TARGET,
-    darkMode,
-    lifespan,
-    rocketCollided,
-    rocketCompleted,
-    showDistance,
-    showTargetLine,
-    showTrail,
-} from '../globals'
+	APP,
+	CAN_HEIGHT,
+	CAN_WIDTH,
+	OBSTACLE_STORE,
+	ROCKET_TRAIL_LENGTH,
+	SPAWN_POS,
+	TARGET,
+	darkMode,
+	lifespan,
+	rocketCollided,
+	rocketCompleted,
+	showDistance,
+	showTargetLine,
+	showTrail,
+} from '../../globals'
 import { computePathPoints, pointDistance } from '../utils'
 import { DNA } from './dna'
+
+const TRAIL_ASSET = await Assets.load('trail.png')
+const ROCKET_ASSET = await Assets.load('rocket.png')
 
 const LINE_COLOR_BLOCKED = 0xfa5252
 const LINE_COLOR_CLEAR = 0x69db7c
@@ -57,7 +60,7 @@ export class Rocket extends Sprite {
         this.zIndex = 1
         this.tint = this.dna.bodyColor
         this.position = SPAWN_POS
-        getStage().addChild(this)
+        APP.stage.addChild(this)
     }
 
     delete() {
@@ -254,7 +257,7 @@ export class Rocket extends Sprite {
 
         if (SHOULD_SHOW_LINE) {
             if (!IS_ON_STAGE) {
-                getStage().addChild(this.lineToTarget)
+               APP.stage.addChild(this.lineToTarget)
             }
             this.lineToTarget.clear()
 
@@ -268,13 +271,13 @@ export class Rocket extends Sprite {
             this.lineToTarget.lineTo(TARGET.position.x, TARGET.position.y)
             this.lineToTarget.stroke({ width: 2, color: LINE_COLOR, alpha: 0.2 })
         } else if (IS_ON_STAGE) {
-            getStage().removeChild(this.lineToTarget)
+            APP.stage.removeChild(this.lineToTarget)
         }
     }
 
     private setupDistText(): BitmapText {
         const DIST_TEXT = new BitmapText({ text: '0', style: { fontSize: 15 } })
-        getStage().addChild(DIST_TEXT)
+        APP.stage.addChild(DIST_TEXT)
         DIST_TEXT.alpha = 0.7
         DIST_TEXT.zIndex = 0
         DIST_TEXT.position.set(this.position.x, this.position.y)
@@ -292,7 +295,7 @@ export class Rocket extends Sprite {
 
         if (SHOULD_SHOW_TEXT) {
             if (!IS_ON_STAGE) {
-                getStage().addChild(this.distText)
+                APP.stage.addChild(this.distText)
             }
             this.distText.position.set(this.position.x + X_OFFSET, this.position.y + Y_OFFSET)
 
@@ -301,7 +304,7 @@ export class Rocket extends Sprite {
                 pointDistance(this.position, TARGET.position)
             ).toString()
         } else if (IS_ON_STAGE) {
-            getStage().removeChild(this.distText)
+            APP.stage.removeChild(this.distText)
         }
     }
 
@@ -311,7 +314,7 @@ export class Rocket extends Sprite {
         TRAIL.alpha = 0.35
         TRAIL.tint = this.dna.trailColor
         TRAIL.zIndex = 0
-        getStage().addChild(TRAIL)
+        APP.stage.addChild(TRAIL)
         return TRAIL
     }
 
@@ -322,7 +325,7 @@ export class Rocket extends Sprite {
         if (SHOULD_SHOW_TRAIL) {
             if (!IS_ON_STAGE) {
                 this.history.fill(this.position.clone())
-                getStage().addChild(this.trail)
+                APP.stage.addChild(this.trail)
             }
 
             this.history.push(this.position.clone())
@@ -330,7 +333,7 @@ export class Rocket extends Sprite {
                 this.history.shift()
             }
         } else if (IS_ON_STAGE) {
-            getStage().removeChild(this.trail)
+            APP.stage.removeChild(this.trail)
         }
     }
 

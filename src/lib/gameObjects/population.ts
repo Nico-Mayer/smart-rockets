@@ -1,4 +1,4 @@
-import { lifespan, populationSize } from '../globals'
+import { lifespan, populationSize } from '../../globals'
 import { randomColor, randomIndex } from '../utils'
 import { DNA } from './dna'
 import { Rocket } from './rocket'

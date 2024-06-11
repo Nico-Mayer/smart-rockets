@@ -1,5 +1,5 @@
 import { Point } from 'pixi.js'
-import { lifespan, mutationRate } from '../globals'
+import { lifespan, mutationRate } from '../../globals'
 import { randomVector } from '../utils'
 
 export class DNA {
