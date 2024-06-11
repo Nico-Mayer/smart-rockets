@@ -1,5 +1,5 @@
 import { Point, Sprite, Texture } from 'pixi.js'
-import { APP, OBSTACLE_STORE, darkMode } from '../../globals'
+import { APP, OBSTACLE_STORE, darkMode, mode } from '../../globals'
 
 const COLOR_DARK_MODE = 0xd3d3d3
 const COLOR_LIGHT_MODE = 0xd3d3d3
@@ -38,7 +38,6 @@ export class Obstacle extends Sprite {
         })
 
         // Register events
-
         this.on('pointerdown', this.onDragStart)
         this.on('pointerup', this.onDragEnd)
         this.on('pointerupoutside', this.onDragEnd)
@@ -59,6 +58,7 @@ export class Obstacle extends Sprite {
     }
 
     onDragStart() {
+        if (mode.value !== 'edit') return
         this.state = 'moving'
         this.alpha = 0.5
 
@@ -66,6 +66,7 @@ export class Obstacle extends Sprite {
     }
 
     onDragMove(event: PointerEvent) {
+        if (mode.value !== 'edit') return
         this.position.x = event.clientX
         this.position.y = event.clientY
         OBSTACLE_STORE.updateObstacle(this.getData())
