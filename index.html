@@ -49,7 +49,7 @@
 						<label class="cursor-pointer label">
 							<span class="label-text">Theme</span>
 							<label class="cursor-pointer grid place-items-center">
-								<input type="checkbox" value="dark"
+								<input type="checkbox" value="dark" id="theme-toggle"
 									class="toggle theme-controller bg-base-content row-start-1 col-start-1 col-span-2" />
 								<svg class="col-start-1 row-start-1 stroke-base-100 fill-base-100"
 									xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -125,28 +125,71 @@
 	</details>
 
 	<div class="collapse collapse-arrow shadow bg-base-100 rounded-box absolute top-10 right-10 w-80" id="stats-island">
-		<input type="checkbox" class="w-12 ml-auto cursor-pointer" checked />
-		<div class="collapse-title text-md font-medium !cursor-grab">
-			Stats
+		<input type="checkbox" class="w-12 ml-auto cursor-pointer !h-2" checked />
+		<div class="collapse-title text-md font-medium !cursor-grab flex items-center gap-2">
+			<div class="i-[tabler--chart-histogram] menu-icon"></div>
+			<span>Stats for nerds</span>
 		</div>
 		<div class="collapse-content">
-			<ul>
-				<h4>General</h4>
-				<li>FPS: <span class="badge" id="fps-span">100</span> </li>
-				<li>Mode: <span id="mode-span">sim</span> </li>
-				<li>Cleared: <span id="cleared-span">false</span> </li>
-				<h4>Population</h4>
-				<li>Generation: <span id="generation-span">0</span></li>
-				<li>Size: <span id="size-span">100</span></li>
-				<li>Lifecycle: <span id="lifecycle-span">0 / 800</span></li>
-				<li>Alive: <span id="alive-span">0</span></li>
-				<li>Crashed: <span id="crashed-span">0</span></li>
-				<li>Completed: <span id="completed-span">0</span></li>
-				<li>Avg fitness: <span id="avg-fitness-span">0</span></li>
-				<li>Selection Pressure: <span id="selection-pressure-span">0</span></li>
-				<h4>DNA</h4>
-				<li>Mutation Rate: <span id="mutation-rate-span">0</span></li>
-			</ul>
+			<ul class="menu menu-sm p-0">
+				<li>
+					<h2 class="menu-title flex items-center gap-4 px-1.5">
+						<div class="i-[tabler--device-gamepad-2] menu-icon"></div>
+						<span>General</span>
+					</h2>
+					<ul>
+						<li>
+							<div>FPS: <span class="data-badge" id="fps-span">100</span></div>
+						</li>
+						<li>
+							<div>Mode: <span class="data-badge" id="mode-span">sim</span></div>
+						</li>
+						<li>
+							<div>Cleared: <span class="data-badge" id="cleared-span">false</span></div>
+						</li>
+					</ul>
+					<h2 class="menu-title flex items-center gap-4 px-1.5">
+						<div class="i-[tabler--select-all] menu-icon"></div>
+						<span>Population</span>
+					</h2>
+					<ul>
+						<li>
+							<div>Generation: <span class="data-badge" id="generation-span">0</span></div>
+						</li>
+						<li>
+							<div>Size: <span class="data-badge" id="size-span">100</span></div>
+						</li>
+						<li>
+							<div>Lifecycle: <span class="data-badge" id="lifecycle-span">0 / 800</span></div>
+						</li>
+						<li>
+							<div>Alive: <span class="data-badge" id="alive-span">0</span></div>
+						</li>
+						<li>
+							<div>Crashed: <span class="data-badge" id="crashed-span">0</span></div>
+						</li>
+						<li>
+							<div>Completed: <span class="data-badge" id="completed-span">0</span></div>
+						</li>
+						<li>
+							<div>Avg fitness: <span class="data-badge" id="avg-fitness-span">0</span></div>
+						</li>
+						<li>
+							<div>Selection Pressure: <span class="data-badge" id="selection-pressure-span">0</span>
+							</div>
+						</li>
+					</ul>
+
+					<h2 class="menu-title flex items-center gap-4 px-1.5">
+						<div class="i-[tabler--dna] menu-icon"></div>
+						<span>DNA</span>
+					</h2>
+					<ul>
+						<li>
+							<div>Mutation Rate: <span class="data-badge" id="mutation-rate-span">0</span></div>
+						</li>
+					</ul>
+				</li>
 		</div>
 	</div>
 

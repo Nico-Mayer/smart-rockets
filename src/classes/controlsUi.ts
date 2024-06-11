@@ -12,33 +12,33 @@ import {
 export class ControlsUI {
     playPauseButton: HTMLButtonElement | null = null
     editButton: HTMLButtonElement | null = null
+    themeToggle: HTMLInputElement | null = null
 
     distCheckbox: HTMLInputElement | null = null
     trailCheckbox: HTMLInputElement | null = null
     targetLineCheckbox: HTMLInputElement | null = null
     qtCheckbox: HTMLInputElement | null = null
-    darkModeCheckbox: HTMLInputElement | null = null
     populationSizeInput: HTMLSelectElement | null = null
 
     constructor() {
         this.playPauseButton = document.querySelector('#play-pause-button')
         this.editButton = document.querySelector('#edit-button')
+        this.themeToggle = document.querySelector('#theme-toggle')
         this.distCheckbox = document.querySelector('#dist-checkbox')
         this.trailCheckbox = document.querySelector('#trail-checkbox')
         this.targetLineCheckbox = document.querySelector('#target-line-checkbox')
         this.qtCheckbox = document.querySelector('#qt-checkbox')
         this.populationSizeInput = document.querySelector('#population-size-input')
-        this.darkModeCheckbox = document.querySelector('#dark-mode-checkbox')
     }
 
     init() {
         this.setupPlayPauseButton()
         this.setupEditButton()
+        this.setupThemeToggle()
         this.setupDistCheckbox()
         this.setupTrailCheckbox()
         this.setupTargetLineCheckbox()
         this.setupQuadTreeCheckbox()
-        this.setupDarkModeCheckbox()
         this.setupPopulationSizeInput()
     }
 
@@ -93,10 +93,10 @@ export class ControlsUI {
         this.targetLineCheckbox?.addEventListener('change', this.toggleShowTargetLine)
     }
 
-    setupDarkModeCheckbox() {
-        if (!this.darkModeCheckbox) return
-        this.darkModeCheckbox.checked = darkMode.value
-        this.darkModeCheckbox?.addEventListener('change', this.toggleDarkMode)
+    setupThemeToggle() {
+        if (!this.themeToggle) return
+        this.themeToggle.checked = darkMode.value
+        this.themeToggle?.addEventListener('change', this.toggleTheme)
     }
 
     setupQuadTreeCheckbox() {
@@ -150,18 +150,14 @@ export class ControlsUI {
         showQuadTree.set(this.qtCheckbox?.checked)
     }
 
-    toggleDarkMode = () => {
-        if (!this.darkModeCheckbox) return
+    toggleTheme = () => {
+        if (!this.themeToggle) return
 
-        if (this.darkModeCheckbox.checked) {
+        if (this.themeToggle.checked) {
             darkMode.emit(true)
-            document.body.classList.add('dark-mode')
-            document.body.classList.remove('light-mode')
             localStorage.setItem('darkMode', 'true')
         } else {
             darkMode.emit(false)
-            document.body.classList.remove('dark-mode')
-            document.body.classList.add('light-mode')
             localStorage.setItem('darkMode', 'false')
         }
     }
