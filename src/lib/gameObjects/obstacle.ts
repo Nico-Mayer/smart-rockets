@@ -1,9 +1,10 @@
 import { Point, Sprite, Texture } from 'pixi.js'
-import { OBSTACLE_STORE, darkMode, mode } from '../../globals'
-import { APP } from '../../globals'
+import { APP, OBSTACLE_STORE, darkMode } from '../../globals'
 
 const COLOR_DARK_MODE = 0xd3d3d3
 const COLOR_LIGHT_MODE = 0xd3d3d3
+
+type ObstacleState = 'static' | 'selected' | 'moving' | 'resizing' | 'rotating'
 
 export interface ObstacleData {
     id: string
@@ -15,7 +16,7 @@ export interface ObstacleData {
 
 export class Obstacle extends Sprite {
     id: string
-    selected: boolean = false
+    state: ObstacleState = 'static'
 
     constructor(data: ObstacleData) {
         super(Texture.WHITE)
@@ -31,35 +32,49 @@ export class Obstacle extends Sprite {
         APP.stage.addChild(this)
 
         this.eventMode = 'static'
-        this.on('pointerdown', this.handelPointerDown)
 
         darkMode.addListener((isDarkMode) => {
             this.tint = isDarkMode ? COLOR_DARK_MODE : COLOR_LIGHT_MODE
         })
+
+        // Register events
+
+        this.on('pointerdown', this.onDragStart)
+        this.on('pointerup', this.onDragEnd)
+        this.on('pointerupoutside', this.onDragEnd)
     }
 
     update() {
-        if (this.selected) {
-            this.tint = 0xff0000
-        } else {
-            this.tint = darkMode.value ? COLOR_DARK_MODE : COLOR_LIGHT_MODE
+        switch (this.state) {
+            case 'selected':
+                this.tint = 0xff0000
+                break
+            case 'moving':
+                this.tint = 0x00ff00
+                break
+            default:
+                this.tint = darkMode.value ? COLOR_DARK_MODE : COLOR_LIGHT_MODE
+                break
         }
     }
 
-    handelPointerDown() {
-        if (mode.value !== 'edit') return
-        this.selected = true
+    onDragStart() {
+        this.state = 'moving'
+        this.alpha = 0.5
 
-        this.on('mousemove', (event) => {
-            if (!this.selected) return
-            this.position = event.client
-            OBSTACLE_STORE?.editObstacle(this.getData())
-        })
+        this.on('pointermove', this.onDragMove)
+    }
 
-        this.on('mouseup', () => {
-            console.log('mouseupcature')
-            this.selected = false
-        })
+    onDragMove(event: PointerEvent) {
+        this.position.x = event.clientX
+        this.position.y = event.clientY
+        OBSTACLE_STORE.updateObstacle(this.getData())
+    }
+
+    onDragEnd() {
+        this.state = 'static'
+        this.alpha = 1
+        this.off('pointermove', this.onDragMove)
     }
 
     getData(): ObstacleData {

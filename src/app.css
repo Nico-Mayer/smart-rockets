@@ -8,7 +8,7 @@ body {
     height: 100vh;
     width: 100vw;
 
-    @apply bg-base-300;
+    @apply bg-base-200;
 }
 
 .menu-icon {
@@ -22,7 +22,15 @@ body {
     @apply badge font-mono badge-neutral;
 }
 
-.btn-icon{
+.btn-icon {
     width: 1rem;
     height: 1rem;
+}
+
+.badge-xxs {
+    height: 0.5rem;
+    font-size: 0.5rem;
+    line-height: 0.5rem;
+    padding-left: 0.19rem;
+    padding-right: 0.19rem;
 }

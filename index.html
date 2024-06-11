@@ -16,11 +16,9 @@
 
 <body>
 	<!-- <div class="hero-grid"></div> -->
-	<details class="dropdown absolute top-5 left-5 " open>
-		<summary class="btn btn-square mb-5" id="dropdown-btn">
-			<svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
-				<path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
-			</svg>
+	<details class="dropdown absolute top-5 left-5" open>
+		<summary class="btn btn-square mb-5 btn-neutral" id="dropdown-btn">
+			<div class="i-[tabler--menu-2] size-5"></div>
 		</summary>
 
 		<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64">
@@ -86,25 +84,55 @@
 				<ul>
 					<div class="form-control w-52">
 						<label class="cursor-pointer label">
-							<span class="label-text">Show Dist <div class="badge badge-primary badge-xs"></div></span>
+
+							<div class="label-text">
+								<span>Distance</span>
+								<div class="tooltip" data-tip="Low FPS impact">
+									<div class="badge badge-success badge-xxs ml-1 opacity-60">
+									</div>
+								</div>
+							</div>
+
 							<input type="checkbox" class="toggle toggle-success" id="dist-checkbox" />
 						</label>
 					</div>
 					<div class="form-control w-52">
 						<label class="cursor-pointer label">
-							<span class="label-text">Show Trail</span>
+
+							<div class="label-text">
+								<span>Trail</span>
+								<div class="tooltip" data-tip="Medium FPS impact">
+									<div class="badge badge-warning badge-xxs ml-1 opacity-60">
+									</div>
+								</div>
+							</div>
+
 							<input type="checkbox" class="toggle toggle-success" id="trail-checkbox" />
 						</label>
 					</div>
 					<div class="form-control w-52">
 						<label class="cursor-pointer label">
-							<span class="label-text">Show Target Line</span>
+
+							<div class="label-text">
+								<span>Target Line</span>
+								<div class="tooltip" data-tip="High FPS impact">
+									<div class="badge badge-error badge-xxs ml-1 opacity-60">
+									</div>
+								</div>
+							</div>
+
 							<input type="checkbox" class="toggle toggle-success" id="target-line-checkbox" />
 						</label>
 					</div>
 					<div class="form-control w-52">
 						<label class="cursor-pointer label">
-							<span class="label-text">Show Quad Tree</span>
+							<div class="label-text">
+								<span>Show Quad tree</span>
+								<div class="tooltip" data-tip="Very high FPS impact">
+									<div class="badge badge-error badge-xxs ml-1">
+									</div>
+								</div>
+							</div>
 							<input type="checkbox" class="toggle toggle-success" id="qt-checkbox" />
 						</label>
 					</div>
@@ -117,7 +145,18 @@
 				</h2>
 				<ul>
 					<label class="form-control w-52 px-1 py-2">
-						<span class="label label-text text-xs pt-0">Population Size</span>
+
+						<label class="label pt-0">
+							<div class="label-text">
+								<span class="text-xs">Population Size</span>
+								<div class="tooltip" data-tip="High FPS impact">
+									<div class="badge badge-error badge-xxs ml-1 opacity-60">
+									</div>
+								</div>
+							</div>
+						</label>
+
+
 						<select class="select select-sm select-bordered" id="population-size-input">
 							<option value="100">100</option>
 							<option value="350">350</option>

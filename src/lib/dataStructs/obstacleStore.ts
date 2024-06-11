@@ -27,7 +27,7 @@ export class ObstacleStore {
         localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
     }
 
-    editObstacle(obstacle: ObstacleData): void {
+    updateObstacle(obstacle: ObstacleData): void {
         const INDEX = this.obstacleData.findIndex((obs) => obs.id === obstacle.id)
         this.obstacleData[INDEX] = obstacle
 
