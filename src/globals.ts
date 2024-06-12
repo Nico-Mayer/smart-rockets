@@ -39,6 +39,7 @@ export const TARGET = new Obstacle({
     y: 120,
     width: 60,
     height: 60,
+    rotation: 0,
 })
 
 // Methods

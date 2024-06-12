@@ -1,8 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Obstacle, ObstacleData } from "../gameObjects/obstacle"
+import { Obstacle, ObstacleData } from '../gameObjects/obstacle'
 
-
-const DEFAULT_OBS_DATA: ObstacleData[] = [{ id: uuidv4(), x: 500, y: 400, width: 500, height: 100 }]
+const DEFAULT_OBS_DATA: ObstacleData[] = [
+    {
+        id: uuidv4(),
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        width: 500,
+        height: 100,
+        rotation: 0,
+    },
+]
 
 export class ObstacleStore {
     private _key: string = 'obstacleData'

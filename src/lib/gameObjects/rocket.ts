@@ -171,9 +171,12 @@ export class Rocket extends Sprite {
             this.position.y > CAN_HEIGHT
         const COLLIDED =
             OUT_OF_BOUNDS ||
-            OBSTACLE_STORE.obstacles.some((obstacle) =>
-                obstacle.getBounds().containsPoint(this.position.x, this.position.y)
-            )
+            OBSTACLE_STORE.obstacles.some((obstacle) => {
+                const LOCAL_POSITION = obstacle.toLocal(this.position)
+                const LOCAL_BOUNDS = obstacle.getLocalBounds()
+
+                return LOCAL_BOUNDS.containsPoint(LOCAL_POSITION.x, LOCAL_POSITION.y)
+            })
 
         if (COLLIDED) {
             POPULATION.alive--

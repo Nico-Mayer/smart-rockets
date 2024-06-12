@@ -4,7 +4,6 @@ import {
     APP,
     CAN_HEIGHT,
     CAN_WIDTH,
-    OBSTACLE_STORE,
     POPULATION,
     mode,
     showQuadTree,
@@ -26,6 +25,7 @@ let prevMode: string = 'sim'
         width: CAN_WIDTH,
         height: CAN_HEIGHT,
         backgroundAlpha: 0,
+        eventMode: 'static',
     })
     document.body.appendChild(APP.canvas)
 
@@ -94,9 +94,6 @@ let prevMode: string = 'sim'
                     QUAD_TREE_VISUALIZER.clear()
                 }
 
-                OBSTACLE_STORE.obstacles.forEach((obstacle) => {
-                    obstacle.update()
-                })
                 prevMode = 'edit'
                 break
             case 'pause':

@@ -60,11 +60,11 @@ export class ControlsUI {
             if (gameMode === 'sim') {
                 PLAY_ICON.classList.add('hidden')
                 PAUSE_ICON.classList.remove('hidden')
-                this.playPauseButton?.classList.add('btn-active')
+                this.playPauseButton?.classList.add('btn-success')
             } else if (gameMode === 'pause' || gameMode === 'edit') {
                 PLAY_ICON.classList.remove('hidden')
                 PAUSE_ICON.classList.add('hidden')
-                this.playPauseButton?.classList.remove('btn-active')
+                this.playPauseButton?.classList.remove('btn-success')
             }
         })
     }
@@ -78,9 +78,9 @@ export class ControlsUI {
 
         mode.addListener((gameMode) => {
             if (gameMode === 'edit') {
-                this.editButton?.classList.add('btn-active')
+                this.editButton?.classList.add('btn-success')
             } else {
-                this.editButton?.classList.remove('btn-active')
+                this.editButton?.classList.remove('btn-success')
             }
         })
     }
