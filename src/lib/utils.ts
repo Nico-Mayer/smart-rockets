@@ -7,6 +7,19 @@ export function randomVector(): Point {
     return new Point(X, Y).multiply(new Point(0.6, 0.6))
 }
 
+export function rotatePoint(point: Point, center: Point, angle: number): Point {
+    const COS_THETA = Math.cos(angle)
+    const SIN_THETA = Math.sin(angle)
+
+    const TRANSLATED_X = point.x - center.x
+    const TRANSLATED_Y = point.y - center.y
+
+    const ROTATED_X = TRANSLATED_X * COS_THETA - TRANSLATED_Y * SIN_THETA
+    const ROTATED_Y = TRANSLATED_X * SIN_THETA + TRANSLATED_Y * COS_THETA
+
+    return new Point(ROTATED_X + center.x, ROTATED_Y + center.y)
+}
+
 export function randomColor() {
     // Generate random RGB values
     const R = Math.floor(Math.random() * 256)

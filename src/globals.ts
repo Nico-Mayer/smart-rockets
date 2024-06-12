@@ -25,7 +25,7 @@ export const darkMode: Signal<boolean> = new PersistedSignal('darkMode', checkIf
 export const showTrail: Signal<boolean> = new PersistedSignal('showTrail', false)
 export const showTargetLine: Signal<boolean> = new PersistedSignal('showTargetLine', false)
 export const showDistance: Signal<boolean> = new PersistedSignal('showDist', false)
-export const mutationRate: Signal<number> = new PersistedSignal('mutationRate', BASE_MUTATION_RATE)
+export const mutationRate: Signal<number> = new Signal(BASE_MUTATION_RATE)
 export const showQuadTree: Signal<boolean> = new PersistedSignal('showQt', false)
 
 // Dependent Constants

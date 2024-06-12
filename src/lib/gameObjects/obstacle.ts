@@ -50,7 +50,6 @@ export class Obstacle extends Container {
         this.on('pointerdown', this.onDragStart)
         this.on('pointerup', this.onDragEnd)
         this.on('pointerupoutside', this.onDragEnd)
-        this.on('click', this.onClick)
     }
 
     private setupGraphic(): Graphics {
@@ -87,25 +86,20 @@ export class Obstacle extends Container {
         this.selectBox.visible = false
     }
 
-    onClick() {
-        if (mode.value !== 'edit') return
-        this.select()
-    }
-
     onDragStart(event: FederatedPointerEvent) {
         if (mode.value !== 'edit') return
+        this.select()
         this.state = 'moving'
         this.alpha = 0.5
 
         offsetX = event.clientX - this.position.x
         offsetY = event.clientY - this.position.y
 
-        this.on('pointermove', this.onDragMove)
+        APP.stage.on('pointermove', this.onDragMove, this)
     }
 
     onDragMove(event: FederatedPointerEvent) {
         if (mode.value !== 'edit') return
-
         this.position.x = event.clientX - offsetX
         this.position.y = event.clientY - offsetY
 
@@ -115,7 +109,7 @@ export class Obstacle extends Container {
     onDragEnd() {
         this.state = 'static'
         this.alpha = 1
-        this.off('pointermove', this.onDragMove)
+        APP.stage.off('pointermove', this.onDragMove)
     }
 
     onThemeChange(isDarkMode: boolean) {

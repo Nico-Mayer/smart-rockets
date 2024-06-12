@@ -18,15 +18,32 @@ export class ObstacleStore {
     obstacles: Obstacle[] = []
 
     constructor() {
-        this.obstacleData = JSON.parse(localStorage.getItem(this._key)!) || []
+        let localData: ObstacleData[] | null
 
-        if (this.obstacleData.length === 0) {
-            this.obstacleData = [...DEFAULT_OBS_DATA]
-            localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+        try {
+            localData = JSON.parse(localStorage.getItem(this._key)!)
+        } catch (e) {
+            console.error(e)
+            localData = DEFAULT_OBS_DATA
         }
-        this.obstacles = this.obstacleData.map((data) => {
-            return new Obstacle(data)
-        })
+
+        if (this.validateLocalStorageData(localData)) {
+            this.obstacles = localData.map((data) => {
+                return new Obstacle(data)
+            })
+        } else {
+            console.log('Invalid data')
+            this.obstacleData = [...DEFAULT_OBS_DATA]
+            this.persistData()
+            this.obstacles = this.obstacleData.map((data) => {
+                return new Obstacle(data)
+            })
+        }
+    }
+
+    persistData(): void {
+        if (this.obstacleData.length === 0) return
+        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
     }
 
     addObstacle(obstacle: Obstacle): void {
@@ -40,5 +57,24 @@ export class ObstacleStore {
         this.obstacleData[INDEX] = obstacle
 
         localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+    }
+
+    validateLocalStorageData(data: unknown): data is ObstacleData[] {
+        if (!Array.isArray(data)) return false
+
+        return data.every((obs) => this.validateObstacleData(obs))
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    validateObstacleData(data: any): data is ObstacleData {
+        return (
+            typeof data === 'object' &&
+            typeof data.id === 'string' &&
+            typeof data.x === 'number' &&
+            typeof data.y === 'number' &&
+            typeof data.width === 'number' &&
+            typeof data.height === 'number' &&
+            typeof data.rotation === 'number'
+        )
     }
 }

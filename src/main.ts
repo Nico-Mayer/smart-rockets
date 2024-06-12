@@ -27,6 +27,7 @@ let prevMode: string = 'sim'
         backgroundAlpha: 0,
         eventMode: 'static',
     })
+    APP.stage.hitArea = APP.screen
     document.body.appendChild(APP.canvas)
 
     // Initialize UI controls
