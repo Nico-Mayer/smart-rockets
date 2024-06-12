@@ -27,14 +27,15 @@ export class ObstacleStore {
             localData = DEFAULT_OBS_DATA
         }
 
-        if (this.validateLocalStorageData(localData)) {
-            this.obstacles = localData.map((data) => {
+        const LOCAL_DATA_IS_VALID = this.validateLocalStorageData(localData)
+        if (!LOCAL_DATA_IS_VALID || localData?.length === 0 || localData === null) {
+            this.obstacleData = [...DEFAULT_OBS_DATA]
+            this.persistData()
+            this.obstacles = this.obstacleData.map((data) => {
                 return new Obstacle(data)
             })
         } else {
-            console.log('Invalid data')
-            this.obstacleData = [...DEFAULT_OBS_DATA]
-            this.persistData()
+            this.obstacleData = localData
             this.obstacles = this.obstacleData.map((data) => {
                 return new Obstacle(data)
             })
