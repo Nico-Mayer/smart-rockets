@@ -25,9 +25,21 @@ let prevMode: string = 'sim'
         width: CAN_WIDTH,
         height: CAN_HEIGHT,
         backgroundAlpha: 0,
-        eventMode: 'static',
     })
-    APP.stage.hitArea = APP.screen
+
+    mode.addListener((mode) => {
+        switch (mode) {
+            case 'sim':
+                APP.stage.eventMode = 'none'
+                APP.stage.hitArea = null
+                break
+            case 'edit':
+                APP.stage.eventMode = 'static'
+                APP.stage.hitArea = APP.screen
+                break
+        }
+    })
+
     document.body.appendChild(APP.canvas)
 
     // Initialize UI controls

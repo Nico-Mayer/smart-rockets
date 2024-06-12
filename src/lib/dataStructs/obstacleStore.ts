@@ -50,14 +50,13 @@ export class ObstacleStore {
     addObstacle(obstacle: Obstacle): void {
         this.obstacles.push(obstacle)
         this.obstacleData.push(obstacle.getData())
-        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+        this.persistData()
     }
 
     updateObstacle(obstacle: ObstacleData): void {
         const INDEX = this.obstacleData.findIndex((obs) => obs.id === obstacle.id)
         this.obstacleData[INDEX] = obstacle
-
-        localStorage.setItem(this._key, JSON.stringify(this.obstacleData))
+		this.persistData()
     }
 
     validateLocalStorageData(data: unknown): data is ObstacleData[] {

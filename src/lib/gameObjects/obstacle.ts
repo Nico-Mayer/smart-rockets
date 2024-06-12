@@ -24,6 +24,8 @@ export class Obstacle extends Container {
     data: ObstacleData
     graphic: Graphics
     selectBox: Graphics
+    repositionHandle: RepositionHandle
+    rotationHandle: RotationHandle
     selected = false
     state: ObstacleState = 'static'
 
@@ -37,19 +39,26 @@ export class Obstacle extends Container {
         this.pivot.set(data.width / 2, data.height / 2)
         this.graphic = this.setupGraphic()
         this.selectBox = this.setupSelectBox()
+        this.rotationHandle = new RotationHandle(this)
+        this.repositionHandle = new RepositionHandle(this)
 
         APP.stage.addChild(this)
 
         // Signal listeners
         darkMode.addListener((isDarkMode) => this.onThemeChange(isDarkMode))
         mode.addListener((mode) => {
-            if (mode === 'sim') this.unselect()
+            switch (mode) {
+                case 'sim':
+                    this.unselect()
+                    this.rotationHandle.visible = false
+                    this.repositionHandle.visible = false
+                    break
+                case 'edit':
+                    this.rotationHandle.visible = true
+                    this.repositionHandle.visible = true
+                    break
+            }
         })
-
-        // Register events
-        this.on('pointerdown', this.onDragStart)
-        this.on('pointerup', this.onDragEnd)
-        this.on('pointerupoutside', this.onDragEnd)
     }
 
     private setupGraphic(): Graphics {
@@ -86,32 +95,6 @@ export class Obstacle extends Container {
         this.selectBox.visible = false
     }
 
-    onDragStart(event: FederatedPointerEvent) {
-        if (mode.value !== 'edit') return
-        this.select()
-        this.state = 'moving'
-        this.alpha = 0.5
-
-        offsetX = event.clientX - this.position.x
-        offsetY = event.clientY - this.position.y
-
-        APP.stage.on('pointermove', this.onDragMove, this)
-    }
-
-    onDragMove(event: FederatedPointerEvent) {
-        if (mode.value !== 'edit') return
-        this.position.x = event.clientX - offsetX
-        this.position.y = event.clientY - offsetY
-
-        OBSTACLE_STORE.updateObstacle(this.getData())
-    }
-
-    onDragEnd() {
-        this.state = 'static'
-        this.alpha = 1
-        APP.stage.off('pointermove', this.onDragMove)
-    }
-
     onThemeChange(isDarkMode: boolean) {
         this.graphic.clear()
         this.graphic.roundRect(0, 0, this.data.width, this.data.height, 10)
@@ -127,5 +110,102 @@ export class Obstacle extends Container {
             height: this.data.height,
             rotation: this.rotation,
         } as ObstacleData
+    }
+}
+
+class RotationHandle extends Graphics {
+    obstacle: Obstacle
+    offsetY: number = -30
+    handleSize: number = 10
+    constructor(obstacle: Obstacle) {
+        super()
+        this.obstacle = obstacle
+        this.eventMode = 'static'
+        this.roundRect(
+            obstacle.width / 2 - this.handleSize / 2,
+            this.offsetY,
+            this.handleSize,
+            this.handleSize,
+            10
+        )
+        this.stroke({ color: 0x00ff00, width: 1 })
+        this.fill({ color: 0x00ff00, alpha: 0.5 })
+        this.visible = false
+
+        this.obstacle.addChild(this)
+
+        this.on('pointerdown', this.onDragStart)
+        this.on('pointerupoutside', this.onDragEnd)
+        this.on('pointerup', this.onDragEnd)
+    }
+
+    onDragStart() {
+        this.obstacle.state = 'rotating'
+        APP.stage.on('pointermove', this.onDragMove, this.obstacle)
+    }
+
+    onDragMove(event: FederatedPointerEvent) {
+        if (mode.value !== 'edit') return
+        const ANGLE = Math.atan2(event.clientY - this.y, event.clientX - this.x)
+        const ADJUSTED_ANGLE = ANGLE + Math.PI / 2
+
+        this.rotation = ADJUSTED_ANGLE
+    }
+
+    onDragEnd() {
+        this.obstacle.state = 'static'
+        APP.stage.off('pointermove', this.onDragMove)
+    }
+}
+
+class RepositionHandle extends Graphics {
+    obstacle: Obstacle
+    offset: number = 5
+    constructor(obstacle: Obstacle) {
+        super()
+        this.obstacle = obstacle
+        this.eventMode = 'static'
+        this.roundRect(
+            this.offset,
+            this.offset,
+            this.obstacle.width - this.offset * 2,
+            this.obstacle.height - this.offset * 2,
+            10
+        )
+        this.stroke({ color: 0x00ff00, width: 1 })
+        this.fill({ color: 0xfff, alpha: 0 })
+        this.visible = false
+        this.obstacle.addChild(this)
+
+        this.on('pointerdown', this.onDragStart, this)
+        this.on('pointerupoutside', this.onDragEnd)
+        this.on('pointerup', this.onDragEnd)
+    }
+
+    onDragStart(event: FederatedPointerEvent) {
+        console.log('onDragStart')
+        if (mode.value !== 'edit') return
+        this.obstacle.select()
+        this.obstacle.state = 'moving'
+        this.obstacle.alpha = 0.5
+
+        offsetX = event.clientX - this.obstacle.position.x
+        offsetY = event.clientY - this.obstacle.position.y
+
+        APP.stage.on('pointermove', this.onDragMove, this)
+    }
+
+    onDragMove(event: FederatedPointerEvent) {
+        if (mode.value !== 'edit') return
+        this.obstacle.position.x = event.clientX - offsetX
+        this.obstacle.position.y = event.clientY - offsetY
+
+        OBSTACLE_STORE.updateObstacle(this.obstacle.getData())
+    }
+
+    onDragEnd() {
+        this.obstacle.state = 'static'
+        this.obstacle.alpha = 1
+        APP.stage.off('pointermove', this.onDragMove)
     }
 }
