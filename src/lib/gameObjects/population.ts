@@ -23,9 +23,9 @@ export class RocketPopulation {
         }
     }
 
-    update() {
+    update(delta: number) {
         for (let i = 0; i < this.size; i++) {
-            this.rockets[i].update(this.lifecycle)
+            this.rockets[i].update(delta, this.lifecycle)
         }
         this.lifecycle++
     }

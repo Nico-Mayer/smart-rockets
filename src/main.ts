@@ -49,22 +49,8 @@ let prevMode: string = 'sim'
     const QUAD_TREE_VISUALIZER = new Graphics()
     APP.stage.addChild(QUAD_TREE_VISUALIZER)
 
-    // Timing variables
-    const UPDATE_INTERVAL = 1000 / 60 // 60 times per second
-    let elapsedUpdate = 0.0
-    let lastUpdate = performance.now()
-
     APP.ticker.add((ticker) => {
-        const CURR_TIME = performance.now()
-        const DELTA_TIME_UPDATE = CURR_TIME - lastUpdate
-        lastUpdate = CURR_TIME
-
-        elapsedUpdate += DELTA_TIME_UPDATE
-
-        if (elapsedUpdate >= UPDATE_INTERVAL) {
-            handleUpdate(ticker)
-            elapsedUpdate = 0
-        }
+        handleUpdate(ticker)
     })
 
     function handleUpdate(ticker: Ticker) {
@@ -99,7 +85,7 @@ let prevMode: string = 'sim'
                     POPULATION.nextGeneration()
                 }
 
-                POPULATION.update()
+                POPULATION.update(ticker.deltaTime)
                 prevMode = 'sim'
                 break
             case 'edit':

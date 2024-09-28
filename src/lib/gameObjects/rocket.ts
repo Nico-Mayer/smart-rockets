@@ -70,20 +70,20 @@ export class Rocket extends Sprite {
         this.destroy()
     }
 
-    update(lifecycle: number) {
+    update(delta: number, lifecycle: number) {
         this.updateTrail()
         this.updateDistText()
         this.updateLineToTarget()
 
         if (this.state !== 'alive') return
 
-        this.vel = this.vel.add(this.acc)
-        this.position = this.position.add(this.vel)
+        this.vel = this.vel.add(new Point(this.acc.x * delta, this.acc.y * delta))
+        this.position = this.position.add(new Point(this.vel.x * delta, this.vel.y * delta))
         this.acc.set(0, 0)
 
         if (lifecycle < lifespan.value) {
             const FORCE = this.dna.genes[lifecycle]
-            this.acc = this.acc.add(FORCE)
+            this.acc = this.acc.add(new Point(FORCE.x * delta, FORCE.y * delta))
         }
         this.rotation = Math.atan2(this.vel.y, this.vel.x)
 
