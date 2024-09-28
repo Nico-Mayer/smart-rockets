@@ -1,248 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
-
-<head>
-	<meta charset="UTF-8" />
-
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="./src/app.css">
-
-	<title>Smart Rockets</title>
-
-</head>
-
-<body>
-	<!-- <div class="hero-grid"></div> -->
-	<details class="dropdown absolute top-5 left-5" open>
-		<summary class="btn btn-square mb-5 btn-neutral" id="dropdown-btn">
-			<div class="i-[tabler--menu-2] size-5"></div>
-		</summary>
-
-		<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64">
-			<li>
-				<h2 class="menu-title flex items-center gap-4 px-1.5">
-					<div class="i-[tabler--device-gamepad-2] menu-icon"></div>
-					<span>General</span>
-				</h2>
-				<ul>
-					<div class="flex px-1 py-2 w-52 justify-between">
-
-						<div class="tooltip" data-tip="Play / Pause">
-							<button class="join-item btn btn-square btn-success" id="play-pause-button">
-								<div class="i-[tabler--player-play-filled] btn-icon hidden"></div>
-								<div class="i-[tabler--player-pause-filled] btn-icon"></div>
-							</button>
-						</div>
-
-						<div class="tooltip" data-tip="Edit mode">
-							<button aria-label="Edit" class="join-item btn btn-square" id="edit-button">
-								<div class="i-[tabler--pencil] btn-icon"></div>
-							</button>
-						</div>
-
-						<div class="tooltip" data-tip="Restart simulation">
-							<button class="join-item btn btn-square">
-								<div class="i-[tabler--repeat]"></div>
-							</button>
-						</div>
-					</div>
-
-					<div class="form-control w-52">
-						<label class="cursor-pointer label">
-							<span class="label-text">Theme</span>
-							<label class="cursor-pointer grid place-items-center">
-								<input type="checkbox" value="dark" id="theme-toggle"
-									class="toggle theme-controller bg-base-content row-start-1 col-start-1 col-span-2" />
-								<svg class="col-start-1 row-start-1 stroke-base-100 fill-base-100"
-									xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round">
-									<circle cx="12" cy="12" r="5" />
-									<path
-										d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-								</svg>
-								<svg class="col-start-2 row-start-1 stroke-base-100 fill-base-100"
-									xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round">
-									<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-								</svg>
-							</label>
-						</label>
-					</div>
-				</ul>
-
-				<h2 class="menu-title flex items-center gap-4 px-1.5">
-					<div class="i-[tabler--heart-rate-monitor] menu-icon"></div>
-					<span>Render Options</span>
-				</h2>
-				<ul>
-					<div class="form-control w-52">
-						<label class="cursor-pointer label">
-
-							<div class="label-text">
-								<span>Distance</span>
-								<div class="tooltip" data-tip="Low FPS impact">
-									<div class="badge badge-success badge-xxs ml-1 opacity-60">
-									</div>
-								</div>
-							</div>
-
-							<input type="checkbox" class="toggle toggle-success" id="dist-checkbox" />
-						</label>
-					</div>
-					<div class="form-control w-52">
-						<label class="cursor-pointer label">
-
-							<div class="label-text">
-								<span>Trail</span>
-								<div class="tooltip" data-tip="Medium FPS impact">
-									<div class="badge badge-warning badge-xxs ml-1 opacity-60">
-									</div>
-								</div>
-							</div>
-
-							<input type="checkbox" class="toggle toggle-success" id="trail-checkbox" />
-						</label>
-					</div>
-					<div class="form-control w-52">
-						<label class="cursor-pointer label">
-
-							<div class="label-text">
-								<span>Target Line</span>
-								<div class="tooltip" data-tip="High FPS impact">
-									<div class="badge badge-error badge-xxs ml-1 opacity-60">
-									</div>
-								</div>
-							</div>
-
-							<input type="checkbox" class="toggle toggle-success" id="target-line-checkbox" />
-						</label>
-					</div>
-					<div class="form-control w-52">
-						<label class="cursor-pointer label">
-							<div class="label-text">
-								<span>Show Quad tree</span>
-								<div class="tooltip" data-tip="Very high FPS impact">
-									<div class="badge badge-error badge-xxs ml-1">
-									</div>
-								</div>
-							</div>
-							<input type="checkbox" class="toggle toggle-success" id="qt-checkbox" />
-						</label>
-					</div>
-				</ul>
-
-
-				<h2 class="menu-title flex items-center gap-4 px-1.5">
-					<div class="i-[tabler--select-all] menu-icon"></div>
-					<span>Population Options</span>
-				</h2>
-				<ul>
-					<label class="form-control w-52 px-1 py-2">
-
-						<label class="label pt-0">
-							<div class="label-text">
-								<span class="text-xs">Population Size</span>
-								<div class="tooltip" data-tip="High FPS impact">
-									<div class="badge badge-error badge-xxs ml-1 opacity-60">
-									</div>
-								</div>
-							</div>
-						</label>
-
-
-						<select class="select select-sm select-bordered" id="population-size-input">
-							<option value="100">100</option>
-							<option value="350">350</option>
-							<option value="500">500</option>
-							<option value="700">700</option>
-							<option value="1200">1200</option>
-							<option value="1600">1600</option>
-							<option value="2500">2500</option>
-						</select>
-					</label>
-				</ul>
-			</li>
-		</ul>
-	</details>
-
-	<div class="collapse collapse-arrow shadow bg-base-100 rounded-box absolute top-10 right-10 w-80" id="stats-island">
-		<input type="checkbox" class="w-12 ml-auto cursor-pointer !h-2" checked />
-		<div class="collapse-title text-md font-medium !cursor-grab">
-			<div class="flex items-center gap-3">
-				<div class="i-[tabler--chart-histogram] menu-icon"></div>
-				<span>Stats for nerds</span>
-			</div>
-		</div>
-		<div class="collapse-content">
-			<ul class="menu menu-sm p-0">
+    <head>
+		<meta charset="UTF-8" />
+	
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./src/app.css">
+	
+		<title>Smart Rockets</title>
+	
+		<script type="module" src="/src/main.ts"></script>
+	
+	</head>
+	
+	<body>
+		<!-- <div class="hero-grid"></div> -->
+		<details class="dropdown absolute top-5 left-5" open>
+			<summary class="btn btn-square mb-5 btn-neutral" id="dropdown-btn">
+				<div class="i-[tabler--menu-2] size-5"></div>
+			</summary>
+	
+			<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64">
 				<li>
 					<h2 class="menu-title flex items-center gap-4 px-1.5">
 						<div class="i-[tabler--device-gamepad-2] menu-icon"></div>
 						<span>General</span>
 					</h2>
 					<ul>
-						<li>
-							<div>FPS: <span class="data-badge" id="fps-span">100</span></div>
-						</li>
-						<li>
-							<div>Mode: <span class="data-badge" id="mode-span">sim</span></div>
-						</li>
-						<li>
-							<div>Cleared: <span class="data-badge" id="cleared-span">false</span></div>
-						</li>
+						<div class="flex px-1 py-2 w-52 justify-between">
+	
+							<div class="tooltip" data-tip="Play / Pause">
+								<button class="join-item btn btn-square btn-success" id="play-pause-button">
+									<div class="i-[tabler--player-play-filled] btn-icon hidden"></div>
+									<div class="i-[tabler--player-pause-filled] btn-icon"></div>
+								</button>
+							</div>
+	
+							<div class="tooltip" data-tip="Edit mode">
+								<button aria-label="Edit" class="join-item btn btn-square" id="edit-button">
+									<div class="i-[tabler--pencil] btn-icon"></div>
+								</button>
+							</div>
+	
+							<div class="tooltip" data-tip="Restart simulation">
+								<button class="join-item btn btn-square">
+									<div class="i-[tabler--repeat]"></div>
+								</button>
+							</div>
+						</div>
+	
+						<div class="form-control w-52">
+							<label class="cursor-pointer label">
+								<span class="label-text">Theme</span>
+								<label class="cursor-pointer grid place-items-center">
+									<input type="checkbox" value="dark" id="theme-toggle"
+										class="toggle theme-controller bg-base-content row-start-1 col-start-1 col-span-2" />
+									<svg class="col-start-1 row-start-1 stroke-base-100 fill-base-100"
+										xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round">
+										<circle cx="12" cy="12" r="5" />
+										<path
+											d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
+									</svg>
+									<svg class="col-start-2 row-start-1 stroke-base-100 fill-base-100"
+										xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+									</svg>
+								</label>
+							</label>
+						</div>
 					</ul>
+	
+					<h2 class="menu-title flex items-center gap-4 px-1.5">
+						<div class="i-[tabler--heart-rate-monitor] menu-icon"></div>
+						<span>Render Options</span>
+					</h2>
+					<ul>
+						<div class="form-control w-52">
+							<label class="cursor-pointer label">
+	
+								<div class="label-text">
+									<span>Distance</span>
+									<div class="tooltip" data-tip="Low FPS impact">
+										<div class="badge badge-success badge-xxs ml-1 opacity-60">
+										</div>
+									</div>
+								</div>
+	
+								<input type="checkbox" class="toggle toggle-success" id="dist-checkbox" />
+							</label>
+						</div>
+						<div class="form-control w-52">
+							<label class="cursor-pointer label">
+	
+								<div class="label-text">
+									<span>Trail</span>
+									<div class="tooltip" data-tip="Medium FPS impact">
+										<div class="badge badge-warning badge-xxs ml-1 opacity-60">
+										</div>
+									</div>
+								</div>
+	
+								<input type="checkbox" class="toggle toggle-success" id="trail-checkbox" />
+							</label>
+						</div>
+						<div class="form-control w-52">
+							<label class="cursor-pointer label">
+	
+								<div class="label-text">
+									<span>Target Line</span>
+									<div class="tooltip" data-tip="High FPS impact">
+										<div class="badge badge-error badge-xxs ml-1 opacity-60">
+										</div>
+									</div>
+								</div>
+	
+								<input type="checkbox" class="toggle toggle-success" id="target-line-checkbox" />
+							</label>
+						</div>
+						<div class="form-control w-52">
+							<label class="cursor-pointer label">
+								<div class="label-text">
+									<span>Show Quad tree</span>
+									<div class="tooltip" data-tip="Very high FPS impact">
+										<div class="badge badge-error badge-xxs ml-1">
+										</div>
+									</div>
+								</div>
+								<input type="checkbox" class="toggle toggle-success" id="qt-checkbox" />
+							</label>
+						</div>
+					</ul>
+	
+	
 					<h2 class="menu-title flex items-center gap-4 px-1.5">
 						<div class="i-[tabler--select-all] menu-icon"></div>
-						<span>Population</span>
+						<span>Population Options</span>
 					</h2>
 					<ul>
-						<li>
-							<div>Generation: <span class="data-badge" id="generation-span">0</span></div>
-						</li>
-						<li>
-							<div>Size: <span class="data-badge" id="size-span">100</span></div>
-						</li>
-						<li>
-							<div>Lifecycle: <span class="data-badge" id="lifecycle-span">0 / 800</span></div>
-						</li>
-						<li>
-							<div>Alive: <span class="data-badge" id="alive-span">0</span></div>
-						</li>
-						<li>
-							<div>Crashed: <span class="data-badge" id="crashed-span">0</span></div>
-						</li>
-						<li>
-							<div>Completed: <span class="data-badge" id="completed-span">0</span></div>
-						</li>
-						<li>
-							<div>Avg fitness: <span class="data-badge" id="avg-fitness-span">0</span></div>
-						</li>
-						<li>
-							<div>Selection Pressure: <span class="data-badge" id="selection-pressure-span">0</span>
-							</div>
-						</li>
-					</ul>
-
-					<h2 class="menu-title flex items-center gap-4 px-1.5">
-						<div class="i-[tabler--dna] menu-icon"></div>
-						<span>DNA</span>
-					</h2>
-					<ul>
-						<li>
-							<div>Mutation Rate: <span class="data-badge" id="mutation-rate-span">0</span></div>
-						</li>
+						<label class="form-control w-52 px-1 py-2">
+	
+							<label class="label pt-0">
+								<div class="label-text">
+									<span class="text-xs">Population Size</span>
+									<div class="tooltip" data-tip="High FPS impact">
+										<div class="badge badge-error badge-xxs ml-1 opacity-60">
+										</div>
+									</div>
+								</div>
+							</label>
+	
+	
+							<select class="select select-sm select-bordered" id="population-size-input">
+								<option value="100">100</option>
+								<option value="350">350</option>
+								<option value="500">500</option>
+								<option value="700">700</option>
+								<option value="1200">1200</option>
+								<option value="1600">1600</option>
+								<option value="2500">2500</option>
+							</select>
+						</label>
 					</ul>
 				</li>
+			</ul>
+		</details>
+	
+		<div class="collapse collapse-arrow shadow bg-base-100 rounded-box absolute top-10 right-10 w-80" id="stats-island">
+			<input type="checkbox" class="w-12 ml-auto cursor-pointer !h-2" checked />
+			<div class="collapse-title text-md font-medium !cursor-grab">
+				<div class="flex items-center gap-3">
+					<div class="i-[tabler--chart-histogram] menu-icon"></div>
+					<span>Stats for nerds</span>
+				</div>
+			</div>
+			<div class="collapse-content">
+				<ul class="menu menu-sm p-0">
+					<li>
+						<h2 class="menu-title flex items-center gap-4 px-1.5">
+							<div class="i-[tabler--device-gamepad-2] menu-icon"></div>
+							<span>General</span>
+						</h2>
+						<ul>
+							<li>
+								<div>FPS: <span class="data-badge" id="fps-span">100</span></div>
+							</li>
+							<li>
+								<div>Mode: <span class="data-badge" id="mode-span">sim</span></div>
+							</li>
+							<li>
+								<div>Cleared: <span class="data-badge" id="cleared-span">false</span></div>
+							</li>
+						</ul>
+						<h2 class="menu-title flex items-center gap-4 px-1.5">
+							<div class="i-[tabler--select-all] menu-icon"></div>
+							<span>Population</span>
+						</h2>
+						<ul>
+							<li>
+								<div>Generation: <span class="data-badge" id="generation-span">0</span></div>
+							</li>
+							<li>
+								<div>Size: <span class="data-badge" id="size-span">100</span></div>
+							</li>
+							<li>
+								<div>Lifecycle: <span class="data-badge" id="lifecycle-span">0 / 800</span></div>
+							</li>
+							<li>
+								<div>Alive: <span class="data-badge" id="alive-span">0</span></div>
+							</li>
+							<li>
+								<div>Crashed: <span class="data-badge" id="crashed-span">0</span></div>
+							</li>
+							<li>
+								<div>Completed: <span class="data-badge" id="completed-span">0</span></div>
+							</li>
+							<li>
+								<div>Avg fitness: <span class="data-badge" id="avg-fitness-span">0</span></div>
+							</li>
+							<li>
+								<div>Selection Pressure: <span class="data-badge" id="selection-pressure-span">0</span>
+								</div>
+							</li>
+						</ul>
+	
+						<h2 class="menu-title flex items-center gap-4 px-1.5">
+							<div class="i-[tabler--dna] menu-icon"></div>
+							<span>DNA</span>
+						</h2>
+						<ul>
+							<li>
+								<div>Mutation Rate: <span class="data-badge" id="mutation-rate-span">0</span></div>
+							</li>
+						</ul>
+					</li>
+			</div>
 		</div>
-	</div>
-
-
-	<script type="module" src="/src/main.ts"></script>
-</body>
-
+	
+	
+		
+	</body>
 </html>
